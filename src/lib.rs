@@ -223,7 +223,7 @@ impl MutationEngine {
         if let Some(corp) = &self.corpus {
             assert!(corp.len() > 0, "Corpus does not contain any files.");
             let chosen = &corp[self.prng.rand() % corp.len()];
-            self.test_case.data.extend_from_slice(&chosen);
+            self.test_case.data.extend_from_slice(chosen);
             self.test_case.size = chosen.len();
         } else {
             let sz: usize = 4096;
@@ -233,7 +233,7 @@ impl MutationEngine {
         }
     }
 
-    pub fn mutate(&mut self) -> TestCase {
+    pub fn mutate(&mut self) -> &Vec<u8> {
         let m = self.prng.gen_range(0, self.mutators.len() - 1);
         self.get_mutator(m);
         debug!("Chosen Mutator: {:#?}", self.mutator);
@@ -256,7 +256,7 @@ impl MutationEngine {
             Mutator::Splice => self.splice(),
             Mutator::InsertFromDict => self.insert_from_dict(),
         }
-        TestCase::new(&self.test_case.data)
+        &self.test_case.data
     }
 
     fn bit_flip(&mut self) {
