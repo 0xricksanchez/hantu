@@ -12,16 +12,26 @@ cd hantu_generator_test
 cargo build --release
 ./target/release/hantu_generator_test
 Hello, world!
-Avergae test case has 55782 bytes
-Execs 10000 -    14745.7/s - 51240
-Execs 20000 -    14259.2/s - 34864
-Execs 30000 -    14159.4/s - 43016
-Execs 40000 -    14139.4/s - 63416
-Execs 50000 -    14104.9/s - 73815
-Execs 60000 -    14211.4/s - 55344
-Execs 70000 -    14179.2/s - 55392
-Execs 80000 -    14149.3/s - 34792
-Execs 90000 -    14229.5/s - 43024
-Execs 100000 -    14297.8/s - 42920
-Execs 110000 -    14376.1/s - 48567
+Average test case size: 55782 bytes
+Execs      10000 -    13892.4/s
+Execs      20000 -    13604.8/s
+Execs      30000 -    13576.9/s
+Execs      40000 -    13824.9/s
+Execs      50000 -    14108.3/s
+Execs      60000 -    14170.7/s
+Execs      70000 -    14085.7/s
+Execs      80000 -    13976.9/s
+Execs      90000 -    13931.6/s
+Execs     100000 -    13859.9/s
+Execs     110000 -    13869.8/s
+Execs     120000 -    13886.5/s
+Execs     130000 -    13935.4/s
+Execs     140000 -    13997.7/s
+Execs     150000 -    13998.0/s
+Execs     160000 -    14080.1/s
+Execs     170000 -    14031.6/s
+Execs     180000 -    14030.2/s
+Execs     190000 -    14076.4/s
+Execs     200000 -    14016.3/s
+Execs     210000 -    14010.8/s
 ```

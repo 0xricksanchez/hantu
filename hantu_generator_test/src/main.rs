@@ -50,7 +50,7 @@ fn main() {
     let mut avg_tc_sz = 0;
     let _ = corpus.iter().for_each(|x| avg_tc_sz += x.len());
     avg_tc_sz /= corpus.len();
-    println!("Avergae test case has {} bytes", avg_tc_sz);
+    println!("Average test case size: {} bytes", avg_tc_sz);
     let mut token_dict = Vec::new();
     token_dict.push("foobar".to_string());
     token_dict.push("deadbeefcafebabe".to_string());
@@ -59,14 +59,13 @@ fn main() {
     let now = Instant::now();
     let mut i: usize = 0;
     loop {
-        let tc = mutation_engine.mutate();
+        let _tc = mutation_engine.mutate();
         i += 1;
         if i % THRESHOLD == 0 {
             println!(
-                "Execs {} - {:10.1}/s - {}",
+                "Execs {:10} - {:10.1}/s",
                 i,
                 i as f64 / now.elapsed().as_secs_f64(),
-                tc.data.len()
             );
         }
     }
