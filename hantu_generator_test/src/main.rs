@@ -47,6 +47,10 @@ fn main() {
     println!("Hello, world!");
     let corpus: Arc<Vec<Vec<u8>>> =
         Arc::new(load_corpus_from_disk("corpus/").into_iter().collect());
+    let mut avg_tc_sz = 0;
+    let _ = corpus.iter().for_each(|x| avg_tc_sz += x.len());
+    avg_tc_sz /= corpus.len();
+    println!("Avergae test case has {} bytes", avg_tc_sz);
     let mut token_dict = Vec::new();
     token_dict.push("foobar".to_string());
     token_dict.push("deadbeefcafebabe".to_string());
