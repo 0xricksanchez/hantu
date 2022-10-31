@@ -1,0 +1,18 @@
+[package]
+name = "hantu_generator_test"
+version = "0.1.0"
+authors = ["C.K. <admin@0x434b.dev>"]
+repository = "https://github.com/0xricksanchez/hantu/"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hantu = { path = "../" }
+
+[profile.release]
+debug = true 
+lto = "fat"
+panic = "abort"
+codegen-units = 1
+opt-level = "z"
