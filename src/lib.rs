@@ -167,7 +167,7 @@ impl MutationEngine {
         if corpus.is_some() {
             mutators.push(Mutator::Splice);
         }
-        let mut prng = if let Some(seed) = prng_seed {
+        let prng = if let Some(seed) = prng_seed {
             Rng::new(seed)
         } else {
             Rng::new(0)
@@ -176,9 +176,7 @@ impl MutationEngine {
         let test_case = if let Some(tc) = test_case {
             tc
         } else {
-            let mut tc = TestCase::default();
-            prng.fill_bytes(&mut tc.data, tc.size);
-            tc
+            TestCase::default()
         };
         MutationEngine {
             mutator: Mutator::BitFlip,
@@ -226,10 +224,8 @@ impl MutationEngine {
             self.test_case.data.extend_from_slice(chosen);
             self.test_case.size = chosen.len();
         } else {
-            let sz: usize = 4096;
-            let mut data = Vec::with_capacity(sz);
-            self.prng.fill_bytes(&mut data, sz);
-            self.test_case = TestCase::new(&data);
+            self.prng
+                .fill_bytes(&mut self.test_case.data, self.test_case.size);
         }
     }
 
@@ -493,7 +489,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn small_corpus() {
         let corpus: Arc<Vec<Vec<u8>>> = Arc::new(
             [
                 "ThisIsSomeTest".as_bytes().to_vec(),
@@ -503,11 +499,20 @@ mod tests {
         );
         let init_tc = TestCase::new(&corpus[0]);
         let mut mutation_engine = MutationEngine::new(Some(init_tc), None, None, Some(corpus));
-        let tc = mutation_engine.mutate();
-        println!("Mutation: {:?}", String::from_utf8_lossy(&tc.data));
+        let tc_data = mutation_engine.mutate();
 
         let expected = "ThisIsSomeTest".to_string();
-        let actual = String::from_utf8_lossy(&tc.data);
+        let actual = String::from_utf8_lossy(&tc_data);
+        println!("Mutation: {:?}", actual);
         assert_ne!(expected, actual);
+    }
+
+    #[test]
+    fn no_corpus() {
+        let mut mutation_engine = MutationEngine::new(None, None, None, None);
+        let tc_data = mutation_engine.mutate();
+
+        assert_eq!(tc_data.len() > 0, true);
+        assert_eq!(tc_data.iter().all(|&x| x == 0), false);
     }
 }
