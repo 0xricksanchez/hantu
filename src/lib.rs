@@ -6,14 +6,23 @@ use magic::{MAGIC_16, MAGIC_32, MAGIC_64, MAGIC_8};
 
 use std::sync::Arc;
 
+type Result<T> = std::result::Result<T, Error>;
+
 const BYTE_POS: [u8; 8] = [1, 2, 4, 8, 16, 32, 64, 128];
 const BYTE_RANGE: [u8; 3] = [2, 4, 8];
 const ENTROPY: usize = 0x5fd89eda3130256d;
 
 #[derive(Debug)]
+pub enum Error {
+    ConsumeError(String),
+}
+
+#[derive(Debug)]
 pub struct TestCase {
     pub data: Vec<u8>,
     pub size: usize,
+    pub idx: usize,
+    pub priority: usize,
 }
 
 impl Default for TestCase {
@@ -21,6 +30,8 @@ impl Default for TestCase {
         TestCase {
             data: Vec::with_capacity(4096),
             size: 4096,
+            idx: 0,
+            priority: 0,
         }
     }
 }
@@ -30,7 +41,73 @@ impl TestCase {
         TestCase {
             data: data.clone(),
             size: data.len(),
+            idx: 0,
+            priority: 0,
         }
+    }
+
+    pub fn consume8(mut self) -> Result<u8> {
+        if self.idx < self.size {
+            let c: u8 = self.data[self.idx];
+            self.idx += 1;
+            return Ok(c);
+        }
+        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+    }
+
+    pub fn consume16(mut self) -> Result<u16> {
+        if self.idx < self.size - 2 {
+            let c = u16::from_be_bytes([self.data[self.idx], self.data[self.idx + 1]]);
+            self.idx += 2;
+            return Ok(c);
+        }
+        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+    }
+
+    pub fn consume32(mut self) -> Result<u32> {
+        if self.idx < self.size - 4 {
+            let c = u32::from_be_bytes([
+                self.data[self.idx],
+                self.data[self.idx + 1],
+                self.data[self.idx + 2],
+                self.data[self.idx + 3],
+            ]);
+            self.idx += 4;
+            return Ok(c);
+        }
+        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+    }
+
+    pub fn consume64(mut self) -> Result<u64> {
+        if self.idx < self.size - 8 {
+            let c = u64::from_be_bytes([
+                self.data[self.idx],
+                self.data[self.idx + 1],
+                self.data[self.idx + 2],
+                self.data[self.idx + 3],
+                self.data[self.idx + 4],
+                self.data[self.idx + 5],
+                self.data[self.idx + 6],
+                self.data[self.idx + 7],
+            ]);
+            self.idx += 8;
+            return Ok(c);
+        }
+        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+    }
+
+    pub fn consume_vec(mut self) -> Result<Vec<u8>> {
+        let v = self.data[self.idx..].to_vec();
+        self.idx = self.size;
+        Ok(v)
+    }
+
+    pub fn consume_str(mut self) -> Result<String> {
+        // TODO why does String:: return str
+        // Bounds check on all these consumers
+        let s = String::from_utf8_lossy(&self.data[self.idx..]);
+        self.idx = self.size;
+        Ok(s.to_string())
     }
 }
 
@@ -144,12 +221,6 @@ pub struct MutationEngine {
 
 impl Default for MutationEngine {
     fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl MutationEngine {
-    pub fn new() -> Self {
         let mutators = vec![
             Mutator::BitFlip,
             Mutator::ByteFlip,
@@ -176,6 +247,12 @@ impl MutationEngine {
             token_dict: Vec::new(),
             corpus: Arc::new(Vec::new()),
         }
+    }
+}
+
+impl MutationEngine {
+    pub fn new() -> Self {
+        MutationEngine::default()
     }
 
     pub fn set_test_case(mut self, test_case: &Vec<u8>) -> Self {
