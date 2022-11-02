@@ -49,11 +49,17 @@ fn main() {
         Arc::new(load_corpus_from_disk("corpus/").into_iter().collect());
     let mut avg_tc_sz = 0;
     corpus.iter().for_each(|x| avg_tc_sz += x.len());
+    assert!(corpus.len() > 0);
     avg_tc_sz /= corpus.len();
     println!("Average test case size: {avg_tc_sz} bytes");
     let token_dict = vec!["foobar".to_string(), "deadbeefcafebabe".to_string()];
 
-    let mut mutation_engine = MutationEngine::new(None, None, Some(token_dict), Some(corpus));
+    let mut mutation_engine = MutationEngine::new()
+        .set_seed(0xdeadbeef)
+        .set_corpus(corpus)
+        .set_token_dict(token_dict)
+        .set_max_mutation_size(5);
+
     let now = Instant::now();
     let mut i: usize = 0;
     loop {

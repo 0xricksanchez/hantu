@@ -2,13 +2,13 @@ pub mod magic;
 
 use core::clone::Clone;
 use core::cmp::PartialOrd;
-use log::debug;
 use magic::{MAGIC_16, MAGIC_32, MAGIC_64, MAGIC_8};
 
 use std::sync::Arc;
 
 const BYTE_POS: [u8; 8] = [1, 2, 4, 8, 16, 32, 64, 128];
 const BYTE_RANGE: [u8; 3] = [2, 4, 8];
+const ENTROPY: usize = 0x5fd89eda3130256d;
 
 #[derive(Debug)]
 pub struct TestCase {
@@ -50,23 +50,27 @@ fn get_rdtsc() -> usize {
 }
 
 #[derive(Debug, Default)]
-pub struct Rng(usize);
+pub struct Rng {
+    pub seed: usize,
+}
 
 impl Rng {
     pub fn new(seed: usize) -> Self {
         if seed == 0 {
-            Rng(0x5fd89eda3130256d ^ get_rdtsc())
+            Rng {
+                seed: ENTROPY ^ get_rdtsc(),
+            }
         } else {
-            Rng(seed)
+            Rng { seed }
         }
     }
 
     #[inline]
     pub fn rand(&mut self) -> usize {
-        let value = self.0;
-        self.0 ^= self.0 << 13;
-        self.0 ^= self.0 >> 17;
-        self.0 ^= self.0 << 43;
+        let value = self.seed;
+        self.seed ^= self.seed << 13;
+        self.seed ^= self.seed >> 17;
+        self.seed ^= self.seed << 43;
         value
     }
 
@@ -130,21 +134,23 @@ pub enum Mutator {
 #[derive(Debug)]
 pub struct MutationEngine {
     pub mutator: Mutator,
+    pub max_mutation_factor: usize,
     pub test_case: TestCase,
     pub prng: Rng,
     pub mutators: Vec<Mutator>,
-    pub token_dict: Option<Vec<String>>,
-    pub corpus: Option<Arc<Vec<Vec<u8>>>>,
+    pub token_dict: Vec<String>,
+    pub corpus: Arc<Vec<Vec<u8>>>,
+}
+
+impl Default for MutationEngine {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl MutationEngine {
-    pub fn new(
-        test_case: Option<TestCase>,
-        prng_seed: Option<usize>,
-        token_dict: Option<Vec<String>>,
-        corpus: Option<Arc<Vec<Vec<u8>>>>,
-    ) -> Self {
-        let mut mutators = [
+    pub fn new() -> Self {
+        let mutators = vec![
             Mutator::BitFlip,
             Mutator::ByteFlip,
             Mutator::NegateByte,
@@ -159,38 +165,54 @@ impl MutationEngine {
             Mutator::Truncate,
             Mutator::Append,
             Mutator::Set,
-        ]
-        .to_vec();
-        if token_dict.is_some() {
-            mutators.push(Mutator::InsertFromDict);
-        }
-        if corpus.is_some() {
-            mutators.push(Mutator::Splice);
-        }
-        let prng = if let Some(seed) = prng_seed {
-            Rng::new(seed)
-        } else {
-            Rng::new(0)
-        };
+        ];
 
-        let test_case = if let Some(tc) = test_case {
-            tc
-        } else {
-            TestCase::default()
-        };
         MutationEngine {
             mutator: Mutator::BitFlip,
-            test_case,
-            prng,
+            max_mutation_factor: 10,
+            test_case: TestCase::default(),
+            prng: Rng::new(0),
             mutators,
-            token_dict,
-            corpus,
+            token_dict: Vec::new(),
+            corpus: Arc::new(Vec::new()),
         }
+    }
+
+    pub fn set_test_case(mut self, test_case: &Vec<u8>) -> Self {
+        self.test_case = TestCase::new(&test_case);
+        self
+    }
+
+    pub fn set_seed(mut self, seed: usize) -> Self {
+        self.prng.seed = ENTROPY ^ seed;
+        self
+    }
+
+    pub fn set_token_dict(mut self, token_dict: Vec<String>) -> Self {
+        self.token_dict = token_dict;
+        self.mutators.push(Mutator::InsertFromDict);
+        self
+    }
+
+    pub fn set_corpus(mut self, corpus: Arc<Vec<Vec<u8>>>) -> Self {
+        self.corpus = corpus;
+        self.mutators.push(Mutator::Splice);
+        self
+    }
+
+    pub fn set_max_mutation_size(mut self, percent: usize) -> Self {
+        if percent == 0 || percent >= 100 {
+            self.max_mutation_factor = 10;
+        } else {
+            self.max_mutation_factor = percent;
+        }
+        self
     }
 
     #[inline]
     fn mutation_size(&mut self) -> usize {
-        let mutation_factor = ((self.prng.gen_range(0, 10) + 1) as f64) * 0.01;
+        let mutation_factor =
+            ((self.prng.gen_range(0, self.max_mutation_factor) + 1) as f64) * 0.01;
         (self.test_case.size as f64 * mutation_factor) as usize + 1
     }
 
@@ -218,9 +240,8 @@ impl MutationEngine {
 
     fn select_random_test_case(&mut self) {
         self.test_case.data.clear();
-        if let Some(corp) = &self.corpus {
-            assert!(corp.len() > 0, "Corpus does not contain any files.");
-            let chosen = &corp[self.prng.rand() % corp.len()];
+        if self.corpus.len() > 0 {
+            let chosen = &self.corpus[self.prng.rand() % self.corpus.len()];
             self.test_case.data.extend_from_slice(chosen);
             self.test_case.size = chosen.len();
         } else {
@@ -232,7 +253,7 @@ impl MutationEngine {
     pub fn mutate(&mut self) -> &Vec<u8> {
         let m = self.prng.gen_range(0, self.mutators.len() - 1);
         self.get_mutator(m);
-        debug!("Chosen Mutator: {:#?}", self.mutator);
+        //println!("Chosen Mutator: {:#?}", self.mutator);
         self.select_random_test_case();
         match self.mutator {
             Mutator::BitFlip => self.bit_flip(),
@@ -446,8 +467,8 @@ impl MutationEngine {
     }
 
     fn truncate(&mut self) {
-        let trunc = (self.prng.gen_range(0, 50)) as f64;
-        let t = self.test_case.size - self.test_case.size * ((trunc * 0.01) as usize);
+        let trunc = (self.prng.gen_range(0, 50) + 1) as f64 * 0.01;
+        let t = self.test_case.size - self.test_case.size * (trunc as usize);
         self.test_case.data.truncate(t);
     }
 
@@ -462,19 +483,18 @@ impl MutationEngine {
 
     fn splice(&mut self) {
         let split_idx = self.prng.gen_range(0, self.test_case.size - 1);
-        let pick = self.prng.rand() % self.corpus.as_ref().unwrap().len();
-        let splice_tc = &self.corpus.as_mut().unwrap()[pick];
+        let pick = self.prng.rand() % self.corpus.len();
+        let splice_tc = &self.corpus[pick];
         let splice_idx = self.prng.gen_range(0, splice_tc.len() - 1);
         self.test_case.data =
             [&self.test_case.data[..split_idx], &splice_tc[splice_idx..]].concat();
     }
 
     fn insert_from_dict(&mut self) {
-        let token_dict = self.token_dict.as_mut().unwrap();
         // TODO why 10
         for _ in 0..10 {
-            let pick = self.prng.rand() % token_dict.len();
-            let d_ele = &token_dict[pick];
+            let pick = self.prng.rand() % self.token_dict.len();
+            let d_ele = &self.token_dict[pick];
             let d_ele_len = d_ele.len();
             let ele_as_chrs = d_ele.as_bytes();
 
@@ -497,8 +517,9 @@ mod tests {
             ]
             .to_vec(),
         );
-        let init_tc = TestCase::new(&corpus[0]);
-        let mut mutation_engine = MutationEngine::new(Some(init_tc), None, None, Some(corpus));
+        let mut mutation_engine = MutationEngine::new()
+            .set_test_case(&corpus[0])
+            .set_corpus(corpus);
         let tc_data = mutation_engine.mutate();
 
         let expected = "ThisIsSomeTest".to_string();
@@ -509,7 +530,7 @@ mod tests {
 
     #[test]
     fn no_corpus() {
-        let mut mutation_engine = MutationEngine::new(None, None, None, None);
+        let mut mutation_engine = MutationEngine::new();
         let tc_data = mutation_engine.mutate();
 
         assert_eq!(tc_data.len() > 0, true);
