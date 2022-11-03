@@ -67,10 +67,15 @@ fn main() {
         i += 1;
         if i % THRESHOLD == 0 {
             println!(
-                "Execs {:10} - {:10.1}/s - {:x?}",
+                "Execs {:10} - {:8.1}/s - [{}]->{:10x} - [{}]->'{:16}' - [{}]-> {:?}",
                 i,
                 i as f64 / now.elapsed().as_secs_f64(),
+                tc.get_idx(),
                 tc.consume64().unwrap(),
+                tc.get_idx(),
+                tc.consume_str(Some(16)).unwrap(),
+                tc.get_idx(),
+                tc.consume_vec(Some(16)).unwrap(),
             );
         }
     }
