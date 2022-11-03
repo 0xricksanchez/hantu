@@ -46,25 +46,25 @@ impl TestCase {
         }
     }
 
-    pub fn consume8(mut self) -> Result<u8> {
+    pub fn consume8(&mut self) -> Result<u8> {
         if self.idx < self.size {
             let c: u8 = self.data[self.idx];
             self.idx += 1;
             return Ok(c);
         }
-        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+        Err(Error::ConsumeError("Nothing left to consume".to_string()))
     }
 
-    pub fn consume16(mut self) -> Result<u16> {
+    pub fn consume16(&mut self) -> Result<u16> {
         if self.idx < self.size - 2 {
             let c = u16::from_be_bytes([self.data[self.idx], self.data[self.idx + 1]]);
             self.idx += 2;
             return Ok(c);
         }
-        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+        Err(Error::ConsumeError("Nothing left to consume".to_string()))
     }
 
-    pub fn consume32(mut self) -> Result<u32> {
+    pub fn consume32(&mut self) -> Result<u32> {
         if self.idx < self.size - 4 {
             let c = u32::from_be_bytes([
                 self.data[self.idx],
@@ -75,10 +75,10 @@ impl TestCase {
             self.idx += 4;
             return Ok(c);
         }
-        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+        Err(Error::ConsumeError("Nothing left to consume".to_string()))
     }
 
-    pub fn consume64(mut self) -> Result<u64> {
+    pub fn consume64(&mut self) -> Result<u64> {
         if self.idx < self.size - 8 {
             let c = u64::from_be_bytes([
                 self.data[self.idx],
@@ -93,18 +93,16 @@ impl TestCase {
             self.idx += 8;
             return Ok(c);
         }
-        return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+        Err(Error::ConsumeError("Nothing left to consume".to_string()))
     }
 
-    pub fn consume_vec(mut self) -> Result<Vec<u8>> {
+    pub fn consume_vec(&mut self) -> Result<Vec<u8>> {
         let v = self.data[self.idx..].to_vec();
         self.idx = self.size;
         Ok(v)
     }
 
-    pub fn consume_str(mut self) -> Result<String> {
-        // TODO why does String:: return str
-        // Bounds check on all these consumers
+    pub fn consume_str(&mut self) -> Result<String> {
         let s = String::from_utf8_lossy(&self.data[self.idx..]);
         self.idx = self.size;
         Ok(s.to_string())
@@ -256,7 +254,7 @@ impl MutationEngine {
     }
 
     pub fn set_test_case(mut self, test_case: &Vec<u8>) -> Self {
-        self.test_case = TestCase::new(&test_case);
+        self.test_case = TestCase::new(test_case);
         self
     }
 
@@ -327,7 +325,7 @@ impl MutationEngine {
         }
     }
 
-    pub fn mutate(&mut self) -> &Vec<u8> {
+    pub fn mutate(&mut self) -> &mut TestCase {
         let m = self.prng.gen_range(0, self.mutators.len() - 1);
         self.get_mutator(m);
         //println!("Chosen Mutator: {:#?}", self.mutator);
@@ -350,7 +348,7 @@ impl MutationEngine {
             Mutator::Splice => self.splice(),
             Mutator::InsertFromDict => self.insert_from_dict(),
         }
-        &self.test_case.data
+        &mut self.test_case
     }
 
     fn bit_flip(&mut self) {
@@ -597,10 +595,10 @@ mod tests {
         let mut mutation_engine = MutationEngine::new()
             .set_test_case(&corpus[0])
             .set_corpus(corpus);
-        let tc_data = mutation_engine.mutate();
+        let tc = mutation_engine.mutate();
 
         let expected = "ThisIsSomeTest".to_string();
-        let actual = String::from_utf8_lossy(&tc_data);
+        let actual = String::from_utf8_lossy(&tc.data);
         println!("Mutation: {:?}", actual);
         assert_ne!(expected, actual);
     }
@@ -608,9 +606,16 @@ mod tests {
     #[test]
     fn no_corpus() {
         let mut mutation_engine = MutationEngine::new();
-        let tc_data = mutation_engine.mutate();
+        let tc = mutation_engine.mutate();
 
-        assert_eq!(tc_data.len() > 0, true);
-        assert_eq!(tc_data.iter().all(|&x| x == 0), false);
+        assert_eq!(tc.data.len() > 0, true);
+        assert_eq!(tc.data.iter().all(|&x| x == 0), false);
+    }
+
+    #[test]
+    fn consume_byte() {
+        let mut mutation_engine = MutationEngine::new();
+        let tc = mutation_engine.mutate();
+        assert_eq!(1, std::mem::size_of_val(&tc.consume8().unwrap()));
     }
 }
