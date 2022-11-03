@@ -45,8 +45,11 @@ fn insert_file_into_corpus(f: PathBuf, corpus: &mut BTreeSet<Vec<u8>>) {
 
 fn main() {
     println!("Hello, world!");
-    let corpus: Arc<Vec<Vec<u8>>> =
-        Arc::new(load_corpus_from_disk("corpus/").into_iter().collect());
+    let corpus: Arc<Vec<Vec<u8>>> = Arc::new(
+        load_corpus_from_disk("/Users/ck/Tools/Research/go-fuzz-corpus/jpeg/corpus")
+            .into_iter()
+            .collect(),
+    );
     let mut avg_tc_sz = 0;
     corpus.iter().for_each(|x| avg_tc_sz += x.len());
     assert!(corpus.len() > 0);
@@ -67,15 +70,15 @@ fn main() {
         i += 1;
         if i % THRESHOLD == 0 {
             println!(
-                "Execs {:10} - {:8.1}/s - [{}]->{:10x} - [{}]->'{:16}' - [{}]-> {:?}",
+                "Execs {:10} - {:8.1}/s - [{}]->{:10x?} - [{}]->'{:16?}' - [{}]-> {:?}",
                 i,
                 i as f64 / now.elapsed().as_secs_f64(),
                 tc.get_idx(),
-                tc.consume64().unwrap(),
+                tc.consume64(),
                 tc.get_idx(),
-                tc.consume_str(Some(16)).unwrap(),
+                tc.consume_str(Some(16)),
                 tc.get_idx(),
-                tc.consume_vec(Some(16)).unwrap(),
+                tc.consume_vec(Some(16)),
             );
         }
     }

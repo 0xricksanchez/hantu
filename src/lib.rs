@@ -68,7 +68,7 @@ impl TestCase {
     }
 
     pub fn consume16(&mut self) -> Result<u16> {
-        if self.idx < self.size - 2 {
+        if self.idx + 2 < self.size {
             let c = u16::from_be_bytes([self.data[self.idx], self.data[self.idx + 1]]);
             self.idx += 2;
             return Ok(c);
@@ -77,7 +77,7 @@ impl TestCase {
     }
 
     pub fn consume32(&mut self) -> Result<u32> {
-        if self.idx < self.size - 4 {
+        if self.idx + 4 < self.size {
             let c = u32::from_be_bytes([
                 self.data[self.idx],
                 self.data[self.idx + 1],
@@ -91,7 +91,7 @@ impl TestCase {
     }
 
     pub fn consume64(&mut self) -> Result<u64> {
-        if self.idx < self.size - 8 {
+        if self.idx + 8 < self.size {
             let c = u64::from_be_bytes([
                 self.data[self.idx],
                 self.data[self.idx + 1],
@@ -108,23 +108,34 @@ impl TestCase {
         Err(Error::ConsumeError("Nothing left to consume".to_string()))
     }
 
-    pub fn consume_vec(&mut self, len: Option<usize>) -> Result<Vec<u8>> {
-        let end = if let Some(l) = len {
-            self.idx + l
+    fn _get_limit(&mut self, len: Option<usize>) -> usize {
+        if let Some(l) = len {
+            let new_end = self.idx + l;
+            if new_end >= self.size {
+                self.size
+            } else {
+                new_end
+            }
         } else {
             self.size - self.idx
-        };
+        }
+    }
+
+    pub fn consume_vec(&mut self, len: Option<usize>) -> Result<Vec<u8>> {
+        let end = self._get_limit(len);
+        if self.idx >= self.size || end >= self.size {
+            return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+        }
         let v = self.data[self.idx..end].to_vec();
         self.idx += end;
         Ok(v)
     }
 
     pub fn consume_str(&mut self, len: Option<usize>) -> Result<String> {
-        let end = if let Some(l) = len {
-            self.idx + l
-        } else {
-            self.size - self.idx
-        };
+        let end = self._get_limit(len);
+        if self.idx >= self.size || end >= self.size {
+            return Err(Error::ConsumeError("Nothing left to consume".to_string()));
+        }
         let s = String::from_utf8_lossy(&self.data[self.idx..end]);
         self.idx += end;
         Ok(s.to_string())
@@ -416,6 +427,9 @@ impl MutationEngine {
         for _ in 0..self.mutation_size() {
             let rng_byte_range = self.prng.choose(&BYTE_RANGE) as usize;
             let rng_idx = self.prng.gen_range(0, self.test_case.size - rng_byte_range);
+            if rng_idx > self.test_case.size {
+                return;
+            }
             for i in 0..(rng_byte_range >> 1) {
                 let tmp = self.test_case.data[rng_idx + i];
                 let swp_idx = rng_byte_range - i - 1;
@@ -429,6 +443,9 @@ impl MutationEngine {
         for _ in 0..self.mutation_size() {
             let rng_byte_range = self.prng.choose(&BYTE_RANGE) as usize;
             let rng_idx = self.prng.gen_range(0, self.test_case.size - rng_byte_range);
+            if rng_idx > self.test_case.size {
+                return;
+            }
             // TODO measure if it has an impact when making this a bool that flips
             // after each call to have alternate adds/subs
             let op = self.prng.bool();
@@ -542,6 +559,9 @@ impl MutationEngine {
                 2 => {
                     let val = self.prng.choose(&MAGIC_32);
                     let val_sz = std::mem::size_of_val(&val);
+                    if val_sz > self.test_case.size {
+                        return;
+                    }
                     let to = self.prng.gen_range(0, self.test_case.size - val_sz);
                     for i in 0..val_sz {
                         self.test_case.data[to + i] =
@@ -551,6 +571,9 @@ impl MutationEngine {
                 3 => {
                     let val = self.prng.choose(&MAGIC_64);
                     let val_sz = std::mem::size_of_val(&val);
+                    if val_sz > self.test_case.size {
+                        return;
+                    }
                     let to = self.prng.gen_range(0, self.test_case.size - val_sz);
                     for i in 0..val_sz {
                         self.test_case.data[to + i] =
@@ -595,8 +618,10 @@ impl MutationEngine {
             let d_ele = &self.token_dict[pick];
             let d_ele_len = d_ele.len();
             let ele_as_chrs = d_ele.as_bytes();
-
             let idx = self.prng.gen_range(0, self.test_case.size - d_ele_len);
+            if idx > self.test_case.size {
+                return;
+            }
             self.test_case.data[idx..(d_ele_len + idx)].clone_from_slice(&ele_as_chrs[..d_ele_len]);
         }
     }
