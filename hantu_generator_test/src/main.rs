@@ -63,13 +63,14 @@ fn main() {
     let now = Instant::now();
     let mut i: usize = 0;
     loop {
-        let _tc = mutation_engine.mutate();
+        let tc = mutation_engine.mutate();
         i += 1;
         if i % THRESHOLD == 0 {
             println!(
-                "Execs {:10} - {:10.1}/s",
+                "Execs {:10} - {:10.1}/s - {:x?}",
                 i,
                 i as f64 / now.elapsed().as_secs_f64(),
+                tc.consume64().unwrap(),
             );
         }
     }
