@@ -46,6 +46,18 @@ impl TestCase {
         }
     }
 
+    pub fn get_idx(&mut self) -> usize {
+        self.idx
+    }
+
+    pub fn get_priority(&mut self) -> usize {
+        self.priority
+    }
+
+    pub fn get_size(&mut self) -> usize {
+        self.size
+    }
+
     pub fn consume8(&mut self) -> Result<u8> {
         if self.idx < self.size {
             let c: u8 = self.data[self.idx];
@@ -96,15 +108,25 @@ impl TestCase {
         Err(Error::ConsumeError("Nothing left to consume".to_string()))
     }
 
-    pub fn consume_vec(&mut self) -> Result<Vec<u8>> {
-        let v = self.data[self.idx..].to_vec();
-        self.idx = self.size;
+    pub fn consume_vec(&mut self, len: Option<usize>) -> Result<Vec<u8>> {
+        let end = if let Some(l) = len {
+            self.idx + l
+        } else {
+            self.size - self.idx
+        };
+        let v = self.data[self.idx..end].to_vec();
+        self.idx += end;
         Ok(v)
     }
 
-    pub fn consume_str(&mut self) -> Result<String> {
-        let s = String::from_utf8_lossy(&self.data[self.idx..]);
-        self.idx = self.size;
+    pub fn consume_str(&mut self, len: Option<usize>) -> Result<String> {
+        let end = if let Some(l) = len {
+            self.idx + l
+        } else {
+            self.size - self.idx
+        };
+        let s = String::from_utf8_lossy(&self.data[self.idx..end]);
+        self.idx += end;
         Ok(s.to_string())
     }
 }
@@ -315,6 +337,7 @@ impl MutationEngine {
 
     fn select_random_test_case(&mut self) {
         self.test_case.data.clear();
+        self.test_case.idx = 0;
         if self.corpus.len() > 0 {
             let chosen = &self.corpus[self.prng.rand() % self.corpus.len()];
             self.test_case.data.extend_from_slice(chosen);
