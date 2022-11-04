@@ -45,11 +45,8 @@ fn insert_file_into_corpus(f: PathBuf, corpus: &mut BTreeSet<Vec<u8>>) {
 
 fn main() {
     println!("Hello, world!");
-    let corpus: Arc<Vec<Vec<u8>>> = Arc::new(
-        load_corpus_from_disk("/Users/ck/Tools/Research/go-fuzz-corpus/jpeg/corpus")
-            .into_iter()
-            .collect(),
-    );
+    let corpus: Arc<Vec<Vec<u8>>> =
+        Arc::new(load_corpus_from_disk("corpus/").into_iter().collect());
     let mut avg_tc_sz = 0;
     corpus.iter().for_each(|x| avg_tc_sz += x.len());
     assert!(corpus.len() > 0);
@@ -61,6 +58,7 @@ fn main() {
         .set_seed(0xdeadbeef)
         .set_corpus(corpus)
         .set_token_dict(token_dict)
+        .set_printable(true)
         .set_max_mutation_size(5);
 
     let now = Instant::now();
