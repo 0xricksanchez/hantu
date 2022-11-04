@@ -395,7 +395,7 @@ impl MutationEngine {
     fn ensure_ascii(&mut self) -> u8 {
         let b = self.prng.gen_byte();
         if self.printable {
-            32 + (b % 127)
+            b.wrapping_sub(32) % 95 + 32
         } else {
             b
         }
