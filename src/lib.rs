@@ -245,6 +245,7 @@ pub struct MutationEngine {
     pub max_mutation_factor: usize,
     pub test_case: TestCase,
     pub prng: Rng,
+    pub printable: bool,
     pub mutators: Vec<Mutator>,
     pub token_dict: Vec<String>,
     pub corpus: Arc<Vec<Vec<u8>>>,
@@ -273,6 +274,7 @@ impl Default for MutationEngine {
             mutator: Mutator::BitFlip,
             max_mutation_factor: 10,
             test_case: TestCase::default(),
+            printable: false,
             prng: Rng::new(0),
             mutators,
             token_dict: Vec::new(),
@@ -305,6 +307,11 @@ impl MutationEngine {
     pub fn set_corpus(mut self, corpus: Arc<Vec<Vec<u8>>>) -> Self {
         self.corpus = corpus;
         self.mutators.push(Mutator::Splice);
+        self
+    }
+
+    pub fn set_printable(mut self, force_ascii: bool) -> Self {
+        self.printable = force_ascii;
         self
     }
 
@@ -385,6 +392,15 @@ impl MutationEngine {
         &mut self.test_case
     }
 
+    fn ensure_ascii(&mut self) -> u8 {
+        let b = self.prng.gen_byte();
+        if self.printable {
+            b.wrapping_sub(32) % 95 + 32
+        } else {
+            b
+        }
+    }
+
     fn bit_flip(&mut self) {
         for _ in 0..self.mutation_size() {
             let rng_idx = self.prng.gen_range(0, self.test_case.size - 1);
@@ -396,12 +412,12 @@ impl MutationEngine {
     fn byte_flip(&mut self) {
         for _ in 0..self.mutation_size() {
             let rng_idx = self.prng.gen_range(0, self.test_case.size - 1);
-            self.test_case.data[rng_idx] ^= self.prng.gen_byte();
+            self.test_case.data[rng_idx] ^= self.ensure_ascii();
         }
     }
 
     fn set(&mut self) {
-        let to_set = self.prng.gen_byte();
+        let to_set = self.ensure_ascii();
         let rng_idx = self.prng.gen_range(0, self.test_case.size - 1);
         let len = self.prng.gen_range(0, (self.test_case.size - rng_idx) - 1);
         self.test_case.data[rng_idx..rng_idx + len]
