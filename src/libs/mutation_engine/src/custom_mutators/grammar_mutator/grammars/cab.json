@@ -1,0 +1,79 @@
+{
+  "<start>": [["<cab_file>"]],
+  "<cab_file>": [["<cab_header>", "<cab_folders>", "<cab_files>"]],
+  "<cab_header>": [
+    [
+      "MSCF",
+      "<dword>",
+      "<dword>",
+      "<dword>",
+      "<dword>",
+      "<dword>",
+      "<dword>",
+      "<word>",
+      "<word>",
+      "<flags>",
+      "<set_id>",
+      "<cabinet_number>"
+    ]
+  ],
+  "<dword>": [["<byte>", "<byte>", "<byte>", "<byte>"]],
+  "<word>": [["<byte>", "<byte>"]],
+  "<byte>": [["<hex_digit>", "<hex_digit>"]],
+  "<hex_digit>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"],
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"]
+  ],
+  "<flags>": [["<byte>", "<byte>"]],
+  "<set_id>": [["<word>"]],
+  "<cabinet_number>": [["<word>"]],
+  "<cab_folders>": [["<cab_folder>", "<cab_folders>"], []],
+  "<cab_folder>": [
+    [
+      "<offset>",
+      "<folder_size>",
+      "<folder_type>",
+      "<folder_attributes>",
+      "<file_count>"
+    ]
+  ],
+  "<offset>": [["<dword>"]],
+  "<folder_size>": [["<dword>"]],
+  "<folder_type>": [["<word>"]],
+  "<folder_attributes>": [["<word>"]],
+  "<file_count>": [["<word>"]],
+  "<cab_files>": [["<cab_file_entry>", "<cab_files>"], []],
+  "<cab_file_entry>": [
+    [
+      "<file_offset>",
+      "<file_size>",
+      "<file_control_id>",
+      "<file_date>",
+      "<file_time>",
+      "<file_attributes>",
+      "<file_name>"
+    ]
+  ],
+  "<file_offset>": [["<dword>"]],
+  "<file_size>": [["<dword>"]],
+  "<file_control_id>": [["<word>"]],
+  "<file_date>": [["<word>"]],
+  "<file_time>": [["<word>"]],
+  "<file_attributes>": [["<word>"]],
+  "<file_name>": [["<file_name_char>", "<file_name>"], ["<file_name_char>"]],
+  "<file_name_char>": [["<hex_digit>"], ["_"], ["."]]
+}

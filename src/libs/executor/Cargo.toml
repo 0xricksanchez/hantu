@@ -1,0 +1,19 @@
+[package]
+name = "executor"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+errors = { path = "../errors" }
+prng = { path = "../prng" }
+magic = { path = "../magic" }
+mutation_engine = { path = "../mutation_engine" }
+grammar_mutator = { path = "../mutation_engine/src/custom_mutators/grammar_mutator" }
+test_case = { path = "../test_case" }
+utils = { path = "../utils" }
+# External dependencies 
+nix = "0.26.2"
+core_affinity = "0.8.0"

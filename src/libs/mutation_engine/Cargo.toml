@@ -1,0 +1,17 @@
+[package]
+name = "mutation_engine"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+prng = { path = "../prng/" }
+test_case = { path = "../test_case/" }
+magic = { path = "../magic/" }
+errors = { path = "../errors/" }
+ni = { path = "src/custom_mutators/ni" }
+grammar_mutator = { path = "src/custom_mutators/grammar_mutator" }
+# external dependencies
+num-traits = "0.2.15"
+num = "0.4.0"

@@ -1,0 +1,196 @@
+{
+  "<start>": [
+    [
+      "<header>",
+      "<logical_screen_descriptor>",
+      "<optional_global_color_table>",
+      "<data>",
+      "<trailer>"
+    ]
+  ],
+  "<header>": [["GIF87a"], ["GIF89a"]],
+  "<logical_screen_descriptor>": [
+    [
+      "<width>",
+      "<height>",
+      "<packed_fields>",
+      "<background_color_index>",
+      "<pixel_aspect_ratio>"
+    ]
+  ],
+  "<width>": [["<numbers>", "<numbers>", "<numbers>", "<numbers>"]],
+  "<height>": [["<numbers>", "<numbers>", "<numbers>", "<numbers>"]],
+  "<packed_fields>": [
+    [
+      "<global_color_table_flag>",
+      "<color_resolution>",
+      "<sort_flag>",
+      "<size_of_global_color_table>"
+    ]
+  ],
+  "<global_color_table_flag>": [["0"], ["1"]],
+  "<color_resolution>": [["<numbers>", "<numbers>", "<numbers>"]],
+  "<sort_flag>": [["0"], ["1"]],
+  "<size_of_global_color_table>": [["<numbers>", "<numbers>", "<numbers>"]],
+  "<background_color_index>": [["<numbers>", "<numbers>"]],
+  "<pixel_aspect_ratio>": [["<numbers>", "<numbers>"]],
+  "<optional_global_color_table>": [["<global_color_table>"], [""]],
+  "<global_color_table>": [["<color>", "<color>", "<color>"]],
+  "<color>": [["<red>", "<green>", "<blue>"]],
+  "<red>": [["<numbers>", "<numbers>"]],
+  "<green>": [["<numbers>", "<numbers>"]],
+  "<blue>": [["<numbers>", "<numbers>"]],
+  "<data>": [
+    ["<application_extension>", "<data>"],
+    ["<graphic_control_extension>", "<data>"],
+    ["<image_descriptor>", "<data>"],
+    [""]
+  ],
+  "<application_extension>": [
+    [
+      "<extension_introducer>",
+      "<application_label>",
+      "<block_size>",
+      "<application_identifier>",
+      "<application_authentication_code>",
+      "<data_sub_blocks>"
+    ]
+  ],
+  "<extension_introducer>": [["21"]],
+  "<application_label>": [["FF"]],
+  "<block_size>": [["0B"]],
+  "<application_identifier>": [
+    [
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>"
+    ]
+  ],
+  "<application_authentication_code>": [
+    ["<character>", "<character>", "<character>"]
+  ],
+  "<graphic_control_extension>": [
+    [
+      "<extension_introducer>",
+      "<graphic_control_label>",
+      "<block_size>",
+      "<packed_fields>",
+      "<delay_time>",
+      "<transparent_color_index>",
+      "<block_terminator>"
+    ]
+  ],
+  "<graphic_control_label>": [["F9"]],
+  "<delay_time>": [["<numbers>", "<numbers>"]],
+  "<transparent_color_index>": [["<numbers>", "<numbers>"]],
+  "<block_terminator>": [["00"]],
+  "<image_descriptor>": [
+    [
+      "<image_separator>",
+      "<image_left_position>",
+      "<image_top_position>",
+      "<image_width>",
+      "<image_height>",
+      "<packed_fields>",
+      "<local_color_table>",
+      "<image_data>"
+    ]
+  ],
+  "<image_separator>": [["2C"]],
+  "<image_left_position>": [["<numbers>", "<numbers>"]],
+  "<image_top_position>": [["<numbers>", "<numbers>"]],
+  "<image_width>": [["<numbers>", "<numbers>", "<numbers>", "<numbers>"]],
+  "<image_height>": [["<numbers>", "<numbers>", "<numbers>", "<numbers>"]],
+  "<local_color_table>": [["<color>", "<color>", "<color>"]],
+  "<image_data>": [["<LZW_minimum_code_size>", "<data_sub_blocks>"]],
+  "<LZW_minimum_code_size>": [["<numbers>", "<numbers>"]],
+  "<data_sub_blocks>": [
+    ["<data_sub_block>", "<data_sub_blocks>"],
+    ["<block_terminator>"]
+  ],
+  "<data_sub_block>": [["<block_size>", "<block_data>"]],
+  "<block_data>": [
+    [
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>",
+      "<character>"
+    ]
+  ],
+  "<trailer>": [["3B"]],
+  "<numbers>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"]
+  ],
+  "<character>": [
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"],
+    ["g"],
+    ["h"],
+    ["i"],
+    ["j"],
+    ["k"],
+    ["l"],
+    ["m"],
+    ["n"],
+    ["o"],
+    ["p"],
+    ["q"],
+    ["r"],
+    ["s"],
+    ["t"],
+    ["u"],
+    ["v"],
+    ["w"],
+    ["x"],
+    ["y"],
+    ["z"],
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["G"],
+    ["H"],
+    ["I"],
+    ["J"],
+    ["K"],
+    ["L"],
+    ["M"],
+    ["N"],
+    ["O"],
+    ["P"],
+    ["Q"],
+    ["R"],
+    ["S"],
+    ["T"],
+    ["U"],
+    ["V"],
+    ["W"],
+    ["X"],
+    ["Y"],
+    ["Z"]
+  ]
+}

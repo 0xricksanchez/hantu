@@ -1,0 +1,178 @@
+{
+  "<start>": [
+    [
+      "<jp2_signature_box>",
+      "<jp2_file_type_box>",
+      "<jp2_header_box>",
+      "<contiguous_codestream_box>"
+    ]
+  ],
+  "<jp2_signature_box>": [
+    ["\u0000\u0000\u0000\u000CjP  \u000D\u000A\u0087\u000A"]
+  ],
+  "<jp2_file_type_box>": [
+    ["\u0000\u0000\u0000\u0014ftypjp2 \u0000\u0000\u0000\u0000jp2 "]
+  ],
+  "<jp2_header_box>": [
+    [
+      "\u0000\u0000\u0000\u0010jp2h",
+      "<jp2_image_header_box>",
+      "<optional_boxes>"
+    ]
+  ],
+  "<jp2_image_header_box>": [
+    [
+      "\u0000\u0000\u0000\u0014ihdr",
+      "<image_height>",
+      "<image_width>",
+      "<num_components>",
+      "<bits_per_component>",
+      "<compression_type>",
+      "<colorspace_unknown>",
+      "<intellectual_property>"
+    ]
+  ],
+  "<image_height>": [["\u0000\u0001"]],
+  "<image_width>": [["\u0000\u0001"]],
+  "<num_components>": [["\u0001"]],
+  "<bits_per_component>": [["\u0007"]],
+  "<compression_type>": [["\u0001"]],
+  "<colorspace_unknown>": [["\u0000"]],
+  "<intellectual_property>": [["\u0000"]],
+  "<optional_boxes>": [
+    [
+      "<jp2_bits_per_component_box>",
+      "<jp2_color_specification_box>",
+      "<jp2_palette_box>",
+      "<jp2_component_mapping_box>",
+      "<jp2_resolution_box>",
+      "<jp2_xml_box>",
+      "<jp2_uuid_box>",
+      "<jp2_unknown_box>",
+      "<optional_boxes>"
+    ],
+    []
+  ],
+  "<jp2_bits_per_component_box>": [
+    ["\u0000\u0000\u0000\u0009bpcc", "<bits_per_component>"]
+  ],
+  "<jp2_color_specification_box>": [
+    [
+      "\u0000\u0000\u0000\u000Fcolr",
+      "<color_method>",
+      "<color_precedence>",
+      "<color_approximation>",
+      "<color_space>"
+    ]
+  ],
+  "<color_method>": [["\u0001"]],
+  "<color_precedence>": [["\u0000"]],
+  "<color_approximation>": [["\u0000"]],
+  "<color_space>": [["\u0000\u0000\u0000\u0000"]],
+  "<jp2_palette_box>": [["\u0000\u0000\u0000\u0009pclr", "<palette_data>"]],
+  "<palette_data>": [["<palette_colors>"]],
+  "<palette_colors>": [["\u0000\u0000\u0000\u0000"]],
+  "<jp2_component_mapping_box>": [
+    ["\u0000\u0000\u0000\u0009cmap", "<component_mapping>"]
+  ],
+  "<component_mapping>": [["\u0000\u0000\u0000\u0000"]],
+  "<jp2_resolution_box>": [
+    [
+      "\u0000\u0000\u0000\u001Dres ",
+      "<capture_resolution_box>",
+      "<default_display_resolution_box>"
+    ]
+  ],
+  "<capture_resolution_box>": [
+    [
+      "\u0000\u0000\u0000\u0011resc",
+      "<vrcNumerator>",
+      "<vrcDenominator>",
+      "<hrcNumerator>",
+      "<hrcDenominator>",
+      "<resolution_exp>"
+    ]
+  ],
+  "<vrcNumerator>": [["\u0000\u0001"]],
+  "<vrcDenominator>": [["\u0000\u0001"]],
+  "<hrcNumerator>": [["\u0000\u0001"]],
+  "<hrcDenominator>": [["\u0000\u0001"]],
+  "<resolution_exp>": [["\u0000"]],
+  "<default_display_resolution_box>": [
+    [
+      "\u0000\u0000\u0000\u0011resd",
+      "<vrcNumerator>",
+      "<vrcDenominator>",
+      "<hrcNumerator>",
+      "<hrcDenominator>",
+      "<resolution_exp>"
+    ]
+  ],
+  "<jp2_xml_box>": [["\u0000\u0000\u0000\u0009xml ", "<xml_data>"]],
+  "<xml_data>": [["\u0000\u0000\u0000\u0000"]],
+  "<jp2_uuid_box>": [
+    ["\u0000\u0000\u0000\u0013uuid", "<uuid_value>", "<uuid_data>"]
+  ],
+  "<uuid_value>": [
+    [
+      "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+    ]
+  ],
+  "<uuid_data>": [["\u0000\u0000\u0000\u0000"]],
+  "<jp2_unknown_box>": [["\u0000\u0000\u0000\u0009ukwn", "<unknown_data>"]],
+  "<unknown_data>": [["\u0000\u0000\u0000\u0000"]],
+  "<contiguous_codestream_box>": [
+    ["\u0000\u0000\u0000\u0009jp2c", "<codestream>"]
+  ],
+  "<codestream>": [["<marker_segment>", "<optional_marker_segments>"]],
+  "<marker_segment>": [
+    ["<soc>", "<siz>", "<cod>", "<qcd>", "<optional_marker_segment>"]
+  ],
+  "<soc>": [["\u00FF\u004F"]],
+  "<siz>": [
+    [
+      "\u00FF\u0051",
+      "<length_siz>",
+      "<codestream_version>",
+      "<reference_grid_size>",
+      "<image_origin>",
+      "<tile_size>",
+      "<tile_origin>",
+      "<number_of_components>"
+    ]
+  ],
+  "<length_siz>": [["\u0000\u000E"]],
+  "<codestream_version>": [["\u0000\u0000"]],
+  "<reference_grid_size>": [["\u0000\u0001\u0000\u0001"]],
+  "<image_origin>": [["\u0000\u0000\u0000\u0000"]],
+  "<tile_size>": [["\u0000\u0001\u0000\u0001"]],
+  "<tile_origin>": [["\u0000\u0000\u0000\u0000"]],
+  "<number_of_components>": [["\u0001"]],
+  "<cod>": [["\u00FF\u0052", "<length_cod>", "<scod>", "<sgcod>", "<spcod>"]],
+  "<length_cod>": [["\u0000\u000C"]],
+  "<scod>": [["\u0000"]],
+  "<sgcod>": [["\u0000\u0000\u0000\u0000"]],
+  "<spcod>": [["\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"]],
+  "<qcd>": [["\u00FF\u005C", "<length_qcd>", "<sqcd>", "<spqcd>"]],
+  "<length_qcd>": [["\u0000\u0004"]],
+  "<sqcd>": [["\u0000"]],
+  "<spqcd>": [["\u0000"]],
+  "<optional_marker_segments>": [
+    ["<marker_segment>", "<optional_marker_segments>"],
+    []
+  ],
+  "<optional_marker_segment>": [["<rgn>", "<poc>", "<ppm>", "<pgt>"]],
+  "<rgn>": [["\u00FF\u005E", "<length_rgn>", "<rgn_data>"]],
+  "<length_rgn>": [["\u0000\u0006"]],
+  "<rgn_data>": [["\u0000\u0001\u0000\u0000\u0000\u0000"]],
+  "<poc>": [["\u00FF\u005F", "<length_poc>", "<poc_data>"]],
+  "<length_poc>": [["\u0000\u0008"]],
+  "<poc_data>": [["\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"]],
+  "<ppm>": [["\u00FF\u0060", "<length_ppm>", "<zppm>", "<ppm_data>"]],
+  "<length_ppm>": [["\u0000\u0005"]],
+  "<zppm>": [["\u0000"]],
+  "<ppm_data>": [["\u0000\u0000\u0000"]],
+  "<pgt>": [["\u00FF\u0061", "<length_pgt>", "<pgt_data>"]],
+  "<length_pgt>": [["\u0000\u0004"]],
+  "<pgt_data>": [["\u0000\u0000\u0000"]]
+}

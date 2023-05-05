@@ -1,0 +1,235 @@
+{
+  "<start>": [["<sql-statement>"]],
+  "<sql-statement>": [
+    ["<select-statement>"],
+    ["<insert-statement>"],
+    ["<update-statement>"],
+    ["<delete-statement>"],
+    ["<create-table-statement>"],
+    ["<alter-table-statement>"],
+    ["<drop-table-statement>"]
+  ],
+  "<select-statement>": [
+    [
+      "SELECT",
+      "<select-list>",
+      "FROM",
+      "<table-name>",
+      "<where-clause>",
+      "<order-by-clause>"
+    ]
+  ],
+  "<select-list>": [
+    ["*"],
+    ["<column-name>", "<column-separator>", "<select-list>"],
+    ["<column-name>"]
+  ],
+  "<column-separator>": [[","]],
+  "<table-name>": [["<identifier>"]],
+  "<column-name>": [["<identifier>"]],
+  "<where-clause>": [
+    ["WHERE", "<condition>", "<logical-operator>", "<where-clause>"],
+    ["WHERE", "<condition>"],
+    []
+  ],
+  "<condition>": [["<column-name>", "<comparison-operator>", "<value>"]],
+  "<comparison-operator>": [
+    ["="],
+    ["<>"],
+    ["<"],
+    [">"],
+    ["<="],
+    [">="],
+    ["LIKE"],
+    ["BETWEEN"],
+    ["IN"]
+  ],
+  "<logical-operator>": [["AND"], ["OR"]],
+  "<value>": [["<number>"], ["<string>"], ["<identifier>"]],
+  "<order-by-clause>": [
+    ["ORDER BY", "<column-name>", "<sorting-direction>"],
+    []
+  ],
+  "<sorting-direction>": [["ASC"], ["DESC"], []],
+  "<insert-statement>": [
+    [
+      "INSERT INTO",
+      "<table-name>",
+      "(",
+      "<column-name-list>",
+      ")",
+      "VALUES",
+      "(",
+      "<value-list>",
+      ")"
+    ]
+  ],
+  "<column-name-list>": [
+    ["<column-name>", "<column-separator>", "<column-name-list>"],
+    ["<column-name>"]
+  ],
+  "<value-list>": [
+    ["<value>", "<value-separator>", "<value-list>"],
+    ["<value>"]
+  ],
+  "<value-separator>": [[","]],
+  "<update-statement>": [
+    [
+      "UPDATE",
+      "<table-name>",
+      "SET",
+      "<column-name>",
+      "=",
+      "<value>",
+      "<where-clause>"
+    ]
+  ],
+  "<delete-statement>": [["DELETE FROM", "<table-name>", "<where-clause>"]],
+  "<create-table-statement>": [
+    ["CREATE TABLE", "<table-name>", "(", "<column-definition-list>", ")"]
+  ],
+  "<column-definition-list>": [
+    [
+      "<column-definition>",
+      "<column-definition-separator>",
+      "<column-definition-list>"
+    ],
+    ["<column-definition>"]
+  ],
+  "<column-definition-separator>": [[","]],
+  "<column-definition>": [
+    ["<column-name>", "<data-type>", "<column-constraint>"]
+  ],
+  "<data-type>": [
+    ["INTEGER"],
+    ["VARCHAR", "(", "<number>", ")"],
+    ["DECIMAL", "(", "<number>", ",", "<number>", ")"],
+    ["DATE"],
+    ["TIMESTAMP"]
+  ],
+  "<column-constraint>": [["PRIMARY KEY"], ["NOT NULL"], []],
+  "<alter-table-statement>": [
+    ["ALTER TABLE", "<table-name>", "ADD", "<column-definition>"],
+    ["ALTER TABLE", "<table-name>", "DROP COLUMN", "<column-name>"],
+    [
+      "ALTER TABLE",
+      "<table-name>",
+      "ALTER COLUMN",
+      "<column-name>",
+      "<column-constraint>"
+    ]
+  ],
+  "<drop-table-statement>": [["DROP TABLE", "<table-name>"]],
+  "<identifier>": [["<character>", "<identifier-characters>"]],
+  "<character>": [
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"],
+    ["g"],
+    ["h"],
+    ["i"],
+    ["j"],
+    ["k"],
+    ["l"],
+    ["m"],
+    ["n"],
+    ["o"],
+    ["p"],
+    ["q"],
+    ["r"],
+    ["s"],
+    ["t"],
+    ["u"],
+    ["v"],
+    ["w"],
+    ["x"],
+    ["y"],
+    ["z"],
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["G"],
+    ["H"],
+    ["I"],
+    ["J"],
+    ["K"],
+    ["L"],
+    ["M"],
+    ["N"],
+    ["O"],
+    ["P"],
+    ["Q"],
+    ["R"],
+    ["S"],
+    ["T"],
+    ["U"],
+    ["V"],
+    ["W"],
+    ["X"],
+    ["Y"],
+    ["Z"]
+  ],
+  "<identifier-characters>": [
+    ["<identifier-character>", "<identifier-characters>"],
+    []
+  ],
+  "<identifier-character>": [["<character>"], ["<digit>"], [""]],
+  "<number>": [["<digit>", "<digits>"]],
+  "<digit>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"]
+  ],
+  "<digits>": [["<digit>", "<digits>"], []],
+  "<string>": [["'", "<string-characters>", "'"]],
+  "<string-characters>": [["<string-character>", "<string-characters>"], []],
+  "<string-character>": [["<any-character-except-quote>"]],
+  "<any-character-except-quote>": [
+    ["<character>"],
+    ["<digit>"],
+    [""],
+    [" "],
+    ["!"],
+    ["#"],
+    ["$"],
+    ["%"],
+    ["&"],
+    ["("],
+    [")"],
+    ["*"],
+    ["+"],
+    [","],
+    ["-"],
+    ["."],
+    ["/"],
+    [";"],
+    ["<"],
+    ["="],
+    [">"],
+    ["?"],
+    ["@"],
+    ["["],
+    ["\\"],
+    ["]"],
+    ["^"],
+    ["_"],
+    ["`"],
+    ["{"],
+    ["|"],
+    ["}"],
+    ["~"]
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "<start>": [["<ntp_packet>"]],
+  "<ntp_packet>": [
+    [
+      "<li>",
+      "<vn>",
+      "<mode>",
+      "<stratum>",
+      "<poll>",
+      "<precision>",
+      "<root_delay>",
+      "<root_dispersion>",
+      "<reference_identifier>",
+      "<reference_timestamp>",
+      "<originate_timestamp>",
+      "<receive_timestamp>",
+      "<transmit_timestamp>"
+    ]
+  ],
+  "<li>": [["00"], ["01"], ["10"], ["11"]],
+  "<vn>": [
+    ["000"],
+    ["001"],
+    ["010"],
+    ["011"],
+    ["100"],
+    ["101"],
+    ["110"],
+    ["111"]
+  ],
+  "<mode>": [
+    ["000"],
+    ["001"],
+    ["010"],
+    ["011"],
+    ["100"],
+    ["101"],
+    ["110"],
+    ["111"]
+  ],
+  "<stratum>": [["<8bit_number>"]],
+  "<poll>": [["<8bit_number>"]],
+  "<precision>": [["<8bit_number>"]],
+  "<root_delay>": [["<32bit_number>"]],
+  "<root_dispersion>": [["<32bit_number>"]],
+  "<reference_identifier>": [["<32bit_number>"]],
+  "<reference_timestamp>": [["<64bit_number>"]],
+  "<originate_timestamp>": [["<64bit_number>"]],
+  "<receive_timestamp>": [["<64bit_number>"]],
+  "<transmit_timestamp>": [["<64bit_number>"]],
+  "<8bit_number>": [
+    [
+      "<binary_digit>",
+      "<binary_digit>",
+      "<binary_digit>",
+      "<binary_digit>",
+      "<binary_digit>",
+      "<binary_digit>",
+      "<binary_digit>",
+      "<binary_digit>"
+    ]
+  ],
+  "<32bit_number>": [
+    ["<8bit_number>", "<8bit_number>", "<8bit_number>", "<8bit_number>"]
+  ],
+  "<64bit_number>": [["<32bit_number>", "<32bit_number>"]],
+  "<binary_digit>": [["0"], ["1"]]
+}

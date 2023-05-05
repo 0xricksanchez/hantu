@@ -1,0 +1,46 @@
+{
+  "<start>": [["<tiff_file>"]],
+  "<tiff_file>": [["<tiff_header>", "<ifd>"]],
+  "<tiff_header>": [["<byte_order>", "<tiff_magic_number>", "<ifd_offset>"]],
+  "<byte_order>": [["II"], ["MM"]],
+  "<tiff_magic_number>": [["42"]],
+  "<ifd_offset>": [["<uint32>"]],
+  "<ifd>": [["<ifd_entry_count>", "<ifd_entries>", "<next_ifd_offset>"]],
+  "<ifd_entry_count>": [["<uint16>"]],
+  "<ifd_entries>": [["<ifd_entry>"], ["<ifd_entries>", "<ifd_entry>"]],
+  "<ifd_entry>": [
+    ["<tag_id>", "<field_type>", "<value_count>", "<value_offset>"]
+  ],
+  "<tag_id>": [
+    ["25", "<digit>"],
+    ["26", "<digit>"],
+    ["27", "<digit>"],
+    ["28", "<digit>"],
+    ["29", "<digit>"],
+    ["50", "<digit>"],
+    ["51", "<digit>"],
+    ["53", "<digit>"],
+    ["5", "<digit>", "<digit>"],
+    ["655", "<digit>", "<digit>"]
+  ],
+  "<digit>": [["<digit0>"], ["<digit1-9>"]],
+  "<digit0>": [["0"]],
+  "<digit1-9>": [["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"]],
+  "<field_type>": [["<digit1-9>"], ["10"], ["11"], ["12"]],
+  "<value_count>": [["<uint32>"]],
+  "<value_offset>": [["<uint32>"]],
+  "<next_ifd_offset>": [["<uint32>"]],
+  "<uint16>": [["<digit>", "<digit>", "<digit>", "<digit>"]],
+  "<uint32>": [
+    [
+      "<digit>",
+      "<digit>",
+      "<digit>",
+      "<digit>",
+      "<digit>",
+      "<digit>",
+      "<digit>",
+      "<digit>"
+    ]
+  ]
+}

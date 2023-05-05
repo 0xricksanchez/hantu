@@ -1,0 +1,427 @@
+{
+  "<start>": [["<statement_list>"]],
+  "<statement_list>": [
+    ["<statement>", "<whitespace>", "<statement_list>"],
+    ["<statement>"]
+  ],
+  "<statement>": [
+    ["<assignment>"],
+    ["<control_structure>"],
+    ["<loop>"],
+    ["<function_call>"],
+    ["<variable_modification>"],
+    ["<print_statement>"],
+    ["<comment>"]
+  ],
+  "<assignment>": [
+    [
+      "<scalar_variable>",
+      "<whitespace>",
+      "<assignment_operator>",
+      "<whitespace>",
+      "<value>"
+    ],
+    [
+      "<array_variable>",
+      "<whitespace>",
+      "<assignment_operator>",
+      "<whitespace>",
+      "<array>"
+    ],
+    [
+      "<hash_variable>",
+      "<whitespace>",
+      "<assignment_operator>",
+      "<whitespace>",
+      "<hash>"
+    ]
+  ],
+  "<value>": [
+    ["<integer>"],
+    ["<float>"],
+    ["<quoted_string>"],
+    ["<scalar_variable>"]
+  ],
+  "<array>": [["(", "<whitespace>", "<array_elements>", "<whitespace>", ")"]],
+  "<array_elements>": [
+    ["<value>", "<whitespace>", ",", "<whitespace>", "<array_elements>"],
+    ["<value>"]
+  ],
+  "<hash>": [["(", "<whitespace>", "<hash_elements>", "<whitespace>", ")"]],
+  "<hash_elements>": [
+    [
+      "<quoted_string>",
+      "<whitespace>",
+      "=>",
+      "<whitespace>",
+      "<value>",
+      "<whitespace>",
+      ",",
+      "<whitespace>",
+      "<hash_elements>"
+    ],
+    ["<quoted_string>", "<whitespace>", "=>", "<whitespace>", "<value>"]
+  ],
+  "<scalar_variable>": [["$", "<identifier>"]],
+  "<array_variable>": [["@", "<identifier>"]],
+  "<hash_variable>": [["%", "<identifier>"]],
+  "<identifier>": [
+    ["<identifier_chars>", "<identifier>"],
+    ["<identifier_chars>"]
+  ],
+  "<identifier_chars>": [["<char>"], ["<digit>"], ["_"]],
+  "<control_structure>": [
+    ["<if_statement>"],
+    ["<unless_statement>"],
+    ["<given_statement>"],
+    ["<when_statement>"]
+  ],
+  "<if_statement>": [
+    [
+      "if",
+      "<whitespace>",
+      "<condition>",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}",
+      "<else_block>"
+    ]
+  ],
+
+  "<else_block>": [
+    [
+      "<whitespace>",
+      "else",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}"
+    ],
+    [""]
+  ],
+  "<unless_statement>": [
+    [
+      "unless",
+      "<whitespace>",
+      "<condition>",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<given_statement>": [
+    [
+      "given",
+      "<whitespace>",
+      "<value>",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<when_statement>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<when_statement>": [
+    [
+      "when",
+      "<whitespace>",
+      "<condition>",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}",
+      "<when_statement>"
+    ],
+    [
+      "when",
+      "<whitespace>",
+      "<condition>",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<loop>": [
+    ["<while_loop>"],
+    ["<until_loop>"],
+    ["<for_loop>"],
+    ["<foreach_loop>"]
+  ],
+  "<while_loop>": [
+    [
+      "while",
+      "<whitespace>",
+      "<condition>",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<until_loop>": [
+    [
+      "until",
+      "<whitespace>",
+      "<condition>",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<for_loop>": [
+    [
+      "for",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<assignment>",
+      "<whitespace>",
+      ";",
+      "<whitespace>",
+      "<condition>",
+      "<whitespace>",
+      ";",
+      "<whitespace>",
+      "<variable_modification>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<foreach_loop>": [
+    [
+      "foreach",
+      "<whitespace>",
+      "<array_variable>",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<value>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<whitespace>",
+      "<statement_list>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<function_call>": [
+    [
+      "<identifier>",
+      "(",
+      "<whitespace>",
+      "<function_arguments>",
+      "<whitespace>",
+      ")"
+    ]
+  ],
+  "<function_arguments>": [
+    ["<value>", "<whitespace>", ",", "<whitespace>", "<function_arguments>"],
+    ["<value>"],
+    [""]
+  ],
+  "<variable_modification>": [
+    ["<scalar_variable>", "<whitespace>", "<increment_or_decrement>"],
+    ["<array_variable>", "<whitespace>", "<push_or_pop>"],
+    ["<hash_variable>", "<whitespace>", "<key_modification>"]
+  ],
+  "<increment_or_decrement>": [["++"], ["--"]],
+  "<push_or_pop>": [["push"], ["pop"]],
+  "<key_modification>": [
+    [
+      "delete",
+      "<whitespace>",
+      "<hash_variable>",
+      "{",
+      "<whitespace>",
+      "<quoted_string>",
+      "<whitespace>",
+      "}"
+    ]
+  ],
+  "<condition>": [
+    [
+      "<value>",
+      "<whitespace>",
+      "<comparison_operator>",
+      "<whitespace>",
+      "<value>"
+    ],
+    [
+      "<value>",
+      "<whitespace>",
+      "<logical_operator>",
+      "<whitespace>",
+      "<value>"
+    ],
+    ["<value>", "<whitespace>", "eq", "<whitespace>", "<value>"],
+    ["<value>", "<whitespace>", "ne", "<whitespace>", "<value>"]
+  ],
+  "<comparison_operator>": [["<"], [">"], ["<="], [">="], ["=="], ["!="]],
+  "<logical_operator>": [["&&"], ["||"], ["and"], ["or"]],
+  "<print_statement>": [
+    [
+      "print",
+      "<whitespace>",
+      "<output_filehandle>",
+      "<whitespace>",
+      "<quoted_string>"
+    ],
+    [
+      "print",
+      "<whitespace>",
+      "<output_filehandle>",
+      "<whitespace>",
+      "<scalar_variable>"
+    ],
+    ["print", "<whitespace>", "<quoted_string>"],
+    ["print", "<whitespace>", "<scalar_variable>"]
+  ],
+  "<output_filehandle>": [["STDOUT"], ["STDERR"]],
+  "<assignment_operator>": [["="]],
+  "<integer>": [["<digit>"]],
+  "<float>": [["<integer>", ".", "<integer>"]],
+  "<digit>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"]
+  ],
+  "<quoted_string>": [
+    ["\"", "<string_chars>", "\""],
+    ["'", "<string_chars>", "'"]
+  ],
+  "<string_chars>": [["<string_char>", "<string_chars>"], ["<string_char>"]],
+  "<char>": [
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["G"],
+    ["H"],
+    ["I"],
+    ["J"],
+    ["K"],
+    ["L"],
+    ["M"],
+    ["N"],
+    ["O"],
+    ["P"],
+    ["Q"],
+    ["R"],
+    ["S"],
+    ["T"],
+    ["U"],
+    ["V"],
+    ["W"],
+    ["X"],
+    ["Y"],
+    ["Z"],
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"],
+    ["g"],
+    ["h"],
+    ["i"],
+    ["j"],
+    ["k"],
+    ["l"],
+    ["m"],
+    ["n"],
+    ["o"],
+    ["p"],
+    ["q"],
+    ["r"],
+    ["s"],
+    ["t"],
+    ["u"],
+    ["v"],
+    ["w"],
+    ["x"],
+    ["y"],
+    ["z"]
+  ],
+  "<special_char>": [
+    ["!"],
+    ["#"],
+    ["$"],
+    ["%"],
+    ["&"],
+    ["("],
+    [")"],
+    ["*"],
+    ["+"],
+    [","],
+    ["-"],
+    ["."],
+    ["/"],
+    [":"],
+    [";"],
+    ["<"],
+    ["="],
+    [">"],
+    ["?"],
+    ["@"],
+    ["["],
+    ["\\"],
+    ["]"],
+    ["^"],
+    ["_"],
+    ["`"],
+    ["{"],
+    ["|"],
+    ["}"],
+    ["~"]
+  ],
+  "<string_char>": [["<digit>"], ["<whitespace>"], ["<special_char>"]],
+  "<whitespace>": [[" "], ["\t"], ["\n"], ["\r"]],
+  "<comment>": [["#", "<comment_chars>", "<end_of_line>"]],
+  "<comment_chars>": [
+    ["<comment_char>", "<comment_chars>"],
+    ["<comment_char>"]
+  ],
+  "<comment_char>": [
+    ["<char>"],
+    ["<digit>"],
+    ["<whitespace>"],
+    ["<end_of_line>"]
+  ],
+  "<end_of_line>": [["\n"], ["\r"], ["\r\n"], ["\n\r"]]
+}
