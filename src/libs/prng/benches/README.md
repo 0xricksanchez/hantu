@@ -76,7 +76,7 @@ Entropy: Wyhash64 with seed 1959409624453986993 -> 7.99 bits per byte
 Entropy: RomuDuoJr with seed 1959409624453986993 -> 7.99 bits per byte
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=
 Entropy: RomuTrio with seed 1959409624453986993 -> 7.99 bits per byte`
-
+``` 
 !["color benchmark"](benched.png)
 
 ## Xorshift64
