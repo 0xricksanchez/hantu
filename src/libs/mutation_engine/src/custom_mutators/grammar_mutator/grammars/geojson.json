@@ -1,0 +1,173 @@
+{
+  "<start>": [["<geojson-object>"]],
+  "<geojson-object>": [["<feature>"], ["<feature-collection>"], ["<geometry>"]],
+  "<feature>": [
+    [
+      "{\"type\": \"Feature\", \"geometry\": ",
+      "<geometry>",
+      ", \"properties\": ",
+      "<properties>",
+      "}"
+    ]
+  ],
+  "<feature-collection>": [
+    [
+      "{\"type\": \"FeatureCollection\", \"features\": [",
+      "<feature-list>",
+      "]}"
+    ]
+  ],
+  "<feature-list>": [["<feature>"], ["<feature>", ",", "<feature-list>"]],
+  "<geometry>": [
+    ["<point>"],
+    ["<multi-point>"],
+    ["<line-string>"],
+    ["<multi-line-string>"],
+    ["<polygon>"],
+    ["<multi-polygon>"],
+    ["<geometry-collection>"]
+  ],
+  "<point>": [
+    ["{\"type\": \"Point\", \"coordinates\": ", "<coordinates>", "}"]
+  ],
+  "<multi-point>": [
+    [
+      "{\"type\": \"MultiPoint\", \"coordinates\": [",
+      "<coordinates-list>",
+      "]}"
+    ]
+  ],
+  "<line-string>": [
+    [
+      "{\"type\": \"LineString\", \"coordinates\": [",
+      "<coordinates-list>",
+      "]}"
+    ]
+  ],
+  "<multi-line-string>": [
+    [
+      "{\"type\": \"MultiLineString\", \"coordinates\": [[",
+      "<coordinates-list>",
+      "]]}"
+    ]
+  ],
+  "<polygon>": [
+    ["{\"type\": \"Polygon\", \"coordinates\": [[", "<coordinates-list>", "]]}"]
+  ],
+  "<multi-polygon>": [
+    [
+      "{\"type\": \"MultiPolygon\", \"coordinates\": [[[",
+      "<coordinates-list>",
+      "]]]}"
+    ]
+  ],
+  "<geometry-collection>": [
+    [
+      "{\"type\": \"GeometryCollection\", \"geometries\": [",
+      "<geometry-list>",
+      "]}"
+    ]
+  ],
+  "<geometry-list>": [["<geometry>"], ["<geometry>, <geometry-list>"]],
+  "<coordinates>": [["[", "<longitude>", ", ", "<latitude>", "]"]],
+  "<coordinates-list>": [
+    ["<coordinates>"],
+    ["<coordinates>, <coordinates-list>"]
+  ],
+  "<longitude>": [["<number>"]],
+  "<latitude>": [["<number>"]],
+  "<number>": [
+    ["<integer>"],
+    ["<integer>", ".", "<digits>"],
+    ["<integer>", ".", "<digits>", "e", "<sign>", "<integer>"],
+    ["<integer>", ".", "<digits>", "E", "<sign>", "<integer>"]
+  ],
+  "<integer>": [["<digit>"], ["<digit>", "<integer>"]],
+  "<digits>": [["<digit>"], ["<digit>", "<digits>"]],
+  "<digit>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"]
+  ],
+  "<sign>": [["+"], ["-"]],
+  "<properties>": [["<object>"]],
+  "<object>": [["{", "<key-value-pair-list>", "}"]],
+  "<key-value-pair-list>": [
+    ["<key-value-pair>"],
+    ["<key-value-pair>, <key-value-pair-list>"]
+  ],
+  "<key-value-pair>": [["\"<word>\":", "<value>"]],
+  "<value>": [
+    ["<number>"],
+    ["<word>"],
+    ["<object>"],
+    ["<array>"],
+    ["true"],
+    ["false"],
+    ["null"]
+  ],
+  "<array>": [["[<value-list>]"]],
+  "<value-list>": [["<value>"], ["<value>, <value-list>"]],
+  "<word>": [["<letter>"], ["<letter>", "<word>"]],
+  "<letter>": [
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"],
+    ["g"],
+    ["h"],
+    ["i"],
+    ["j"],
+    ["k"],
+    ["l"],
+    ["m"],
+    ["n"],
+    ["o"],
+    ["p"],
+    ["q"],
+    ["r"],
+    ["s"],
+    ["t"],
+    ["u"],
+    ["v"],
+    ["w"],
+    ["x"],
+    ["y"],
+    ["z"],
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["G"],
+    ["H"],
+    ["I"],
+    ["J"],
+    ["K"],
+    ["L"],
+    ["M"],
+    ["N"],
+    ["O"],
+    ["P"],
+    ["Q"],
+    ["R"],
+    ["S"],
+    ["T"],
+    ["U"],
+    ["V"],
+    ["W"],
+    ["X"],
+    ["Y"],
+    ["Z"]
+  ]
+}

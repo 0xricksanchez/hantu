@@ -1,0 +1,622 @@
+{
+  "<start>": [["<program>"]],
+  "<program>": [["<statements>"]],
+  "<statements>": [["<statement>"], ["<statement>", "<statements>"]],
+  "<statement>": [
+    ["<declaration>"],
+    ["<expression_statement>"],
+    ["<control_structure>"],
+    ["<function_declaration>"],
+    ["<library_call>"],
+    ["<interesting_edge_case>"]
+  ],
+  "<declaration>": [
+    [
+      "var",
+      "<whitespace>",
+      "<identifier>",
+      "<whitespace>",
+      "=",
+      "<whitespace>",
+      "<expression>",
+      ";"
+    ],
+    [
+      "let",
+      "<whitespace>",
+      "<identifier>",
+      "<whitespace>",
+      "=",
+      "<whitespace>",
+      "<expression>",
+      ";"
+    ],
+    [
+      "const",
+      "<whitespace>",
+      "<identifier>",
+      "<whitespace>",
+      "=",
+      "<whitespace>",
+      "<expression>",
+      ";"
+    ]
+  ],
+  "<expression_statement>": [["<expression>", ";"]],
+  "<control_structure>": [["<if_statement>"], ["<while_loop>"], ["<for_loop>"]],
+  "<function_declaration>": [
+    [
+      "function",
+      "<whitespace>",
+      "<identifier>",
+      "(",
+      "<function_arguments>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<javascript>",
+      "}"
+    ]
+  ],
+  "<library_call>": [
+    ["<console_log>"],
+    ["<math_library_call>"],
+    ["<array_method_call>"]
+  ],
+  "<interesting_edge_case>": [
+    ["<eval_call>"],
+    ["<setTimeout_call>"],
+    ["<setInterval_call>"]
+  ],
+  "<eval_call>": [
+    ["eval", "(", "<whitespace>", "<string>", "<whitespace>", ")", ";"]
+  ],
+  "<setTimeout_call>": [
+    [
+      "setTimeout",
+      "(",
+      "<whitespace>",
+      "<function>",
+      "<whitespace>",
+      ",",
+      "<whitespace>",
+      "<number>",
+      "<whitespace>",
+      ")",
+      ";"
+    ]
+  ],
+  "<setInterval_call>": [
+    [
+      "setInterval",
+      "(",
+      "<whitespace>",
+      "<function>",
+      "<whitespace>",
+      ",",
+      "<whitespace>",
+      "<number>",
+      "<whitespace>",
+      ")",
+      ";"
+    ]
+  ],
+  "<console_log>": [
+    [
+      "console.log",
+      "(",
+      "<whitespace>",
+      "<expression>",
+      "<whitespace>",
+      ")",
+      ";"
+    ]
+  ],
+  "<math_library_call>": [
+    [
+      "Math.",
+      "<math_function>",
+      "(",
+      "<whitespace>",
+      "<expression>",
+      "<whitespace>",
+      ")",
+      ";"
+    ]
+  ],
+  "<math_function>": [
+    ["abs"],
+    ["ceil"],
+    ["floor"],
+    ["round"],
+    ["min"],
+    ["max"],
+    ["random"],
+    ["sqrt"],
+    ["pow"]
+  ],
+  "<array_method_call>": [
+    [
+      "<identifier>",
+      ".",
+      "<array_method>",
+      "(",
+      "<whitespace>",
+      "<array_method_arguments>",
+      "<whitespace>",
+      ")",
+      ";"
+    ]
+  ],
+  "<array_method>": [
+    ["push"],
+    ["pop"],
+    ["shift"],
+    ["unshift"],
+    ["splice"],
+    ["concat"],
+    ["indexOf"],
+    ["lastIndexOf"],
+    ["map"],
+    ["filter"],
+    ["reduce"],
+    ["sort"]
+  ],
+  "<array_method_arguments>": [
+    ["<expression>"],
+    [
+      "<expression>",
+      "<whitespace>",
+      ",",
+      "<whitespace>",
+      "<array_method_arguments>"
+    ],
+    []
+  ],
+  "<variable_declaration>": [
+    [
+      "var",
+      "<whitespace>",
+      "<identifier>",
+      "<whitespace>",
+      "=",
+      "<whitespace>",
+      "<expression>"
+    ],
+    [
+      "let",
+      "<whitespace>",
+      "<identifier>",
+      "<whitespace>",
+      "=",
+      "<whitespace>",
+      "<expression>"
+    ]
+  ],
+  "<constant_declaration>": [
+    [
+      "const",
+      "<whitespace>",
+      "<identifier>",
+      "<whitespace>",
+      "=",
+      "<whitespace>",
+      "<expression>"
+    ]
+  ],
+  "<expression>": [
+    ["<function_call>"],
+    ["<assignment_expression>"],
+    ["<arithmetic_expression>"],
+    ["<comparison_expression>"],
+    ["<logical_expression>"],
+    ["<value>"]
+  ],
+  "<function_call>": [
+    [
+      "<identifier>",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<arguments>",
+      "<whitespace>",
+      ")"
+    ]
+  ],
+  "<arguments>": [
+    ["<expression>"],
+    ["<expression>", "<whitespace>", ",", "<whitespace>", "<arguments>"],
+    []
+  ],
+  "<assignment_expression>": [
+    [
+      "<identifier>",
+      "<whitespace>",
+      "<assignment_operator>",
+      "<whitespace>",
+      "<expression>"
+    ]
+  ],
+  "<assignment_operator>": [["="], ["+="], ["-="], ["*="], ["/="], ["%="]],
+  "<arithmetic_expression>": [
+    [
+      "<value>",
+      "<whitespace>",
+      "<arithmetic_operator>",
+      "<whitespace>",
+      "<value>"
+    ]
+  ],
+  "<arithmetic_operator>": [["+"], ["-"], ["*"], ["/"], ["%"]],
+  "<comparison_expression>": [
+    [
+      "<value>",
+      "<whitespace>",
+      "<comparison_operator>",
+      "<whitespace>",
+      "<value>"
+    ]
+  ],
+  "<comparison_operator>": [
+    ["<"],
+    [">"],
+    ["<="],
+    [">="],
+    ["=="],
+    ["!="],
+    ["==="],
+    ["!=="]
+  ],
+  "<logical_expression>": [
+    [
+      "<expression>",
+      "<whitespace>",
+      "<logical_operator>",
+      "<whitespace>",
+      "<expression>"
+    ]
+  ],
+  "<logical_operator>": [["&&"], ["||"], ["!"]],
+  "<control_structure>": [
+    ["<if_structure>"],
+    ["<while_loop>"],
+    ["<for_loop>"],
+    ["<switch_structure>"]
+  ],
+  "<if_structure>": [
+    [
+      "if",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<expression>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<statements>",
+      "}",
+      "<whitespace>",
+      "<else_if_structure>",
+      "<whitespace>",
+      "<else_structure>"
+    ]
+  ],
+  "<else_if_structure>": [
+    [
+      "else",
+      "<whitespace>",
+      "if",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<expression>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<statements>",
+      "}",
+      "<whitespace>",
+      "<else_if_structure>"
+    ],
+    []
+  ],
+  "<else_structure>": [["else", "<whitespace>", "{", "<statements>", "}"], []],
+  "<while_loop>": [
+    [
+      "while",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<expression>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<statements>",
+      "}"
+    ]
+  ],
+  "<for_loop>": [
+    [
+      "for",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<declaration>",
+      ";",
+      "<whitespace>",
+      "<expression>",
+      ";",
+      "<whitespace>",
+      "<assignment_expression>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<statements>",
+      "}"
+    ]
+  ],
+  "<switch_structure>": [
+    [
+      "switch",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<expression>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<case_structure>",
+      "<default_structure>",
+      "}"
+    ]
+  ],
+  "<case_structure>": [
+    [
+      "<whitespace>",
+      "case",
+      "<whitespace>",
+      "<value>",
+      ":",
+      "<whitespace>",
+      "<statements>",
+      "<case_structure>"
+    ],
+    []
+  ],
+  "<default_structure>": [
+    ["<whitespace>", "default", ":", "<whitespace>", "<statements>"],
+    []
+  ],
+  "<function_declaration>": [
+    [
+      "function",
+      "<whitespace>",
+      "<identifier>",
+      "<whitespace>",
+      "(",
+      "<whitespace>",
+      "<parameters>",
+      "<whitespace>",
+      ")",
+      "<whitespace>",
+      "{",
+      "<statements>",
+      "}"
+    ]
+  ],
+  "<parameters>": [
+    ["<identifier>"],
+    ["<identifier>", "<whitespace>", ",", "<whitespace>", "<parameters>"],
+    []
+  ],
+  "<value>": [
+    ["<identifier>"],
+    ["<number>"],
+    ["<string>"],
+    ["<boolean>"],
+    ["<null>"],
+    ["<array>"],
+    ["<object>"]
+  ],
+  "<identifier>": [["<letter>", "<identifier>"], ["<letter>"]],
+  "<letter>": [
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"],
+    ["g"],
+    ["h"],
+    ["i"],
+    ["j"],
+    ["k"],
+    ["l"],
+    ["m"],
+    ["n"],
+    ["o"],
+    ["p"],
+    ["q"],
+    ["r"],
+    ["s"],
+    ["t"],
+    ["u"],
+    ["v"],
+    ["w"],
+    ["x"],
+    ["y"],
+    ["z"],
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["G"],
+    ["H"],
+    ["I"],
+    ["J"],
+    ["K"],
+    ["L"],
+    ["M"],
+    ["N"],
+    ["O"],
+    ["P"],
+    ["Q"],
+    ["R"],
+    ["S"],
+    ["T"],
+    ["U"],
+    ["V"],
+    ["W"],
+    ["X"],
+    ["Y"],
+    ["Z"],
+    ["_"],
+    ["$"]
+  ],
+  "<number>": [["<digit>", "<number>"], ["<digit>"]],
+  "<digit>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"]
+  ],
+  "<string>": [
+    ["'", "<string_chars>", "'"],
+    ["\"", "<string_chars>", "\""]
+  ],
+  "<string_chars>": [["<char>", "<string_chars>"], ["<char>"], []],
+  "<char>": [
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"],
+    ["g"],
+    ["h"],
+    ["i"],
+    ["j"],
+    ["k"],
+    ["l"],
+    ["m"],
+    ["n"],
+    ["o"],
+    ["p"],
+    ["q"],
+    ["r"],
+    ["s"],
+    ["t"],
+    ["u"],
+    ["v"],
+    ["w"],
+    ["x"],
+    ["y"],
+    ["z"],
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["G"],
+    ["H"],
+    ["I"],
+    ["J"],
+    ["K"],
+    ["L"],
+    ["M"],
+    ["N"],
+    ["O"],
+    ["P"],
+    ["Q"],
+    ["R"],
+    ["S"],
+    ["T"],
+    ["U"],
+    ["V"],
+    ["W"],
+    ["X"],
+    ["Y"],
+    ["Z"],
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"],
+    ["_"],
+    [" "],
+    ["."],
+    [","],
+    [";"],
+    [":"],
+    ["?"],
+    ["!"],
+    ["("],
+    [")"],
+    ["["],
+    ["]"],
+    ["{"],
+    ["}"],
+    ["'"],
+    ["\""],
+    ["<"],
+    [">"],
+    ["#"],
+    ["$"],
+    ["%"],
+    ["^"],
+    ["&"],
+    ["*"],
+    ["+"],
+    ["-"],
+    ["="],
+    ["|"],
+    ["\\"],
+    ["/"],
+    ["@"],
+    ["`"],
+    ["~"]
+  ],
+  "<boolean>": [["true"], ["false"]],
+  "<null>": [["null"]],
+  "<array>": [["[", "<whitespace>", "<array_elements>", "<whitespace>", "]"]],
+  "<array_elements>": [
+    ["<expression>"],
+    ["<expression>", "<whitespace>", ",", "<whitespace>", "<array_elements>"],
+    []
+  ],
+  "<object>": [["{", "<whitespace>", "<object_members>", "<whitespace>", "}"]],
+  "<object_members>": [
+    ["<object_member>"],
+    [
+      "<object_member>",
+      "<whitespace>",
+      ",",
+      "<whitespace>",
+      "<object_members>"
+    ],
+    []
+  ],
+  "<object_member>": [
+    ["<identifier>", "<whitespace>", ":", "<whitespace>", "<expression>"]
+  ],
+  "<whitespace>": [[" "], ["\t"], ["\n"], ["\r"], []]
+}

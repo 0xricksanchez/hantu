@@ -1,0 +1,119 @@
+{
+  "<start>": [
+    ["<header>", "<body>", "<xref_section>", "<trailer>", "<eof_marker>"]
+  ],
+  "<header>": [["%PDF-1.", "<pdf_version>"]],
+  "<pdf_version>": [["3"], ["4"], ["5"], ["6"], ["7"]],
+  "<body>": [["<object>", "<body>"], []],
+  "<object>": [
+    ["<object_number>", "<generation_number>", "obj", "<object_data>", "endobj"]
+  ],
+  "<object_number>": [["<integer>"]],
+  "<generation_number>": [["0"]],
+  "<object_data>": [
+    ["<dictionary>"],
+    ["<array>"],
+    ["<stream>"],
+    ["<number>"],
+    ["<boolean>"],
+    ["<name>"]
+  ],
+  "<dictionary>": [["<<", "<dictionary_entries>", ">>"]],
+  "<dictionary_entries>": [
+    ["<name>", "<object_data>", "<dictionary_entries>"],
+    []
+  ],
+  "<array>": [["[", "<array_entries>", "]"]],
+  "<array_entries>": [["<object_data>", "<array_entries>"], []],
+  "<character>": [
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"]
+  ],
+  "<digit>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"]
+  ],
+  "<name>": [["/", "<name_chars>"]],
+  "<name_chars>": [
+    ["<character>", "<name_chars>"],
+    ["<digit>", "<name_chars>"],
+    ["_", "<name_chars>"],
+    ["-", "<name_chars>"],
+    [".", "<name_chars>"],
+    []
+  ],
+  "<number>": [["<integer>", ".", "<integer>"], ["<integer>"]],
+  "<integer>": [["<digit>", "<integer>"], ["<digit>"]],
+  "<boolean>": [["true"], ["false"]],
+  "<stream>": [["stream", "<stream_data>", "endstream"]],
+  "<stream_data>": [["<stream_data_chars>", "<stream_data>"], []],
+  "<stream_data_chars>": [
+    ["<character>"],
+    ["<digit>"],
+    ["<whitespace>"],
+    ["<stream_special_chars>"]
+  ],
+  "<whitespace>": [[" "], ["\\t"], ["\\n"], ["\\r"]],
+  "<stream_special_chars>": [
+    ["!"],
+    ["#"],
+    ["$"],
+    ["%"],
+    ["&"],
+    ["("],
+    [")"],
+    ["*"],
+    ["+"],
+    [","],
+    ["-"],
+    ["."],
+    ["/"],
+    [":"],
+    [";"],
+    ["<"],
+    ["="],
+    [">"],
+    ["?"],
+    ["@"],
+    ["["],
+    ["]"],
+    ["^"],
+    ["_"],
+    ["`"],
+    ["{"],
+    ["|"],
+    ["}"],
+    ["~"]
+  ],
+  "<xref_section>": [["xref", "<xref_entries>"]],
+  "<xref_entries>": [
+    [
+      "<object_number>",
+      "<generation_number>",
+      "<xref_entry_type>",
+      "<xref_entries>"
+    ],
+    []
+  ],
+  "<xref_entry_type>": [["n"], ["f"]],
+  "<trailer>": [["trailer", "<dictionary>"]],
+  "<eof_marker>": [["%%EOF"]]
+}

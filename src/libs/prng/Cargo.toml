@@ -1,0 +1,17 @@
+[package]
+name = "prng"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+packed_simd_2 = { version = "0.3.8", package = "packed_simd_2", features = [
+  "into_bits",
+] }
+clap = { version = "4.2.7", features = ["derive"] }
+
+[dev-dependencies]
+plotters = "0.3.4"
+statrs = "0.16.0"
+image = "0.24.6"

@@ -1,0 +1,254 @@
+{
+  "<start>": [["<statements>"]],
+  "<statements>": [["<statement>", "<statements>"], ["<statement>"]],
+  "<statement>": [
+    ["<assignment>"],
+    ["<function_definition>"],
+    ["<class_definition>"],
+    ["<conditional>"],
+    ["<loop>"],
+    ["<try_except>"],
+    ["<import_statement>"],
+    ["<expression>"]
+  ],
+  "<assignment>": [["<identifier>", "=", "<expression>"]],
+  "<function_definition>": [
+    ["def", "<identifier>", "(", "<function_arguments>", ")", ":", "<block>"]
+  ],
+  "<class_definition>": [["class", "<identifier>", ":", "<block>"]],
+  "<conditional>": [
+    ["if", "<expression>", ":", "<block>", "<elif_block>", "<else_block>"]
+  ],
+  "<elif_block>": [
+    ["elif", "<expression>", ":", "<block>", "<elif_block>"],
+    [""]
+  ],
+  "<else_block>": [["else", ":", "<block>"], [""]],
+  "<loop>": [
+    ["while", "<expression>", ":", "<block>"],
+    ["for", "<identifier>", "in", "<expression>", ":", "<block>"]
+  ],
+  "<try_except>": [
+    ["try", ":", "<block>", "<except_block>", "<finally_block>"]
+  ],
+  "<except_block>": [
+    [
+      "except",
+      "<expression>",
+      "as",
+      "<identifier>",
+      ":",
+      "<block>",
+      "<except_block>"
+    ],
+    ["except", "<expression>", ":", "<block>", "<except_block>"],
+    ["except", ":", "<block>", "<except_block>"],
+    [""]
+  ],
+  "<finally_block>": [["finally", ":", "<block>"], [""]],
+  "<import_statement>": [
+    ["import", "<identifier>"],
+    ["from", "<identifier>", "import", "<identifier>"],
+    ["import", "<identifier>", "as", "<identifier>"],
+    ["from", "<identifier>", "import", "<identifier>", "as", "<identifier>"]
+  ],
+  "<block>": [["\\n", "    ", "<statements>"]],
+  "<expression>": [
+    ["<identifier>"],
+    ["<constant>"],
+    ["<function_call>"],
+    ["<list_comprehension>"],
+    ["<dict_comprehension>"],
+    ["<set_comprehension>"],
+    ["<lambda>"],
+    ["<decorator_expression>"],
+    ["<with_expression>"],
+    ["<generator_expression>"],
+    ["(", "<expression>", ")"]
+  ],
+  "<function_arguments>": [
+    ["<identifier>", ",", "<function_arguments>"],
+    ["<identifier>"],
+    [""]
+  ],
+  "<function_call>": [
+    ["<identifier>", "(", "<function_arguments>", ")"],
+    ["<builtin_function>", "(", "<function_arguments>", ")"]
+  ],
+  "<builtin_function>": [
+    ["len"],
+    ["sum"],
+    ["max"],
+    ["min"],
+    ["abs"],
+    ["round"],
+    ["sorted"],
+    ["reversed"],
+    ["range"],
+    ["enumerate"],
+    ["zip"],
+    ["map"],
+    ["filter"],
+    ["any"],
+    ["all"]
+  ],
+  "<list_comprehension>": [
+    [
+      "[",
+      "<expression>",
+      "for",
+      "<identifier>",
+      "in",
+      "<expression>",
+      "<list_if_condition>",
+      "]"
+    ]
+  ],
+  "<list_if_condition>": [["if", "<expression>"], [""]],
+  "<dict_comprehension>": [
+    [
+      "{",
+      "<identifier>",
+      ":",
+      "<expression>",
+      "for",
+      "<identifier>",
+      "in",
+      "<expression>",
+      "<dict_if_condition>",
+      "}"
+    ]
+  ],
+  "<dict_if_condition>": [["if", "<expression>"], [""]],
+  "<set_comprehension>": [
+    [
+      "{",
+      "<expression>",
+      "for",
+      "<identifier>",
+      "in",
+      "<expression>",
+      "<set_if_condition>",
+      "}"
+    ]
+  ],
+  "<set_if_condition>": [["if", "<expression>"], [""]],
+  "<lambda>": [["lambda", "<function_arguments>", ":", "<expression>"]],
+  "<decorator_expression>": [
+    ["@", "<identifier>", "\n", "<function_definition>"]
+  ],
+  "<with_expression>": [
+    ["with", "<expression>", "as", "<identifier>", ":", "<block>"]
+  ],
+  "<generator_expression>": [
+    [
+      "(",
+      "<expression>",
+      "for",
+      "<identifier>",
+      "in",
+      "<expression>",
+      "<generator_if_condition>",
+      ")"
+    ]
+  ],
+  "<generator_if_condition>": [["if", "<expression>"], [""]],
+  "<identifier>": [["<letter>", "<identifier_chars>"]],
+  "<identifier_chars>": [
+    ["<letter>", "<identifier_chars>"],
+    ["<digit>", "<identifier_chars>"],
+    ["_", "<identifier_chars>"],
+    [""]
+  ],
+  "<letter>": [
+    ["a"],
+    ["b"],
+    ["c"],
+    ["d"],
+    ["e"],
+    ["f"],
+    ["g"],
+    ["h"],
+    ["i"],
+    ["j"],
+    ["k"],
+    ["l"],
+    ["m"],
+    ["n"],
+    ["o"],
+    ["p"],
+    ["q"],
+    ["r"],
+    ["s"],
+    ["t"],
+    ["u"],
+    ["v"],
+    ["w"],
+    ["x"],
+    ["y"],
+    ["z"],
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"],
+    ["G"],
+    ["H"],
+    ["I"],
+    ["J"],
+    ["K"],
+    ["L"],
+    ["M"],
+    ["N"],
+    ["O"],
+    ["P"],
+    ["Q"],
+    ["R"],
+    ["S"],
+    ["T"],
+    ["U"],
+    ["V"],
+    ["W"],
+    ["X"],
+    ["Y"],
+    ["Z"]
+  ],
+  "<digit>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"]
+  ],
+  "<constant>": [
+    ["<integer>"],
+    ["<float>"],
+    ["<string>"],
+    ["True"],
+    ["False"],
+    ["None"]
+  ],
+  "<integer>": [["<digit>", "<integer>"], ["<digit>"]],
+  "<float>": [["<integer>", ".", "<integer>"]],
+  "<string>": [
+    ["\"", "<string_chars>", "\""],
+    ["'", "<string_chars>", "'"]
+  ],
+  "<string_chars>": [
+    ["<letter>", "<string_chars>"],
+    ["<digit>", "<string_chars>"],
+    ["_", "<string_chars>"],
+    ["\n", "<string_chars>"],
+    ["\t", "<string_chars>"],
+    ["\"", "<string_chars>"],
+    ["'", "<string_chars>"],
+    [" ", "<string_chars>"],
+    [""]
+  ]
+}

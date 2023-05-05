@@ -1,0 +1,69 @@
+{
+  "<start>": [["<bmp_file>"]],
+  "<bmp_file>": [["<bmp_header>", "<dib_header>", "<pixel_array>"]],
+  "<bmp_header>": [
+    [
+      "<file_type>",
+      "<file_size>",
+      "<reserved1>",
+      "<reserved2>",
+      "<pixel_array_offset>"
+    ]
+  ],
+  "<file_type>": [["BM"]],
+  "<file_size>": [["<four_byte_value>"]],
+  "<reserved1>": [["<two_byte_value>"]],
+  "<reserved2>": [["<two_byte_value>"]],
+  "<pixel_array_offset>": [["<four_byte_value>"]],
+  "<dib_header>": [
+    [
+      "<header_size>",
+      "<bitmap_width>",
+      "<bitmap_height>",
+      "<planes>",
+      "<bits_per_pixel>",
+      "<compression>",
+      "<image_size>",
+      "<horizontal_resolution>",
+      "<vertical_resolution>",
+      "<colors_in_palette>",
+      "<important_colors>"
+    ]
+  ],
+  "<header_size>": [["<four_byte_value>"]],
+  "<bitmap_width>": [["<four_byte_value>"]],
+  "<bitmap_height>": [["<four_byte_value>"]],
+  "<planes>": [["1"]],
+  "<bits_per_pixel>": [["1"], ["4"], ["8"], ["16"], ["24"], ["32"]],
+  "<compression>": [["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"]],
+  "<image_size>": [["<four_byte_value>"]],
+  "<horizontal_resolution>": [["<four_byte_value>"]],
+  "<vertical_resolution>": [["<four_byte_value>"]],
+  "<colors_in_palette>": [["<four_byte_value>"]],
+  "<important_colors>": [["<four_byte_value>"]],
+  "<pixel_array>": [["<pixel>", "<pixel_array>"], []],
+  "<pixel>": [["<byte_value>", "<byte_value>", "<byte_value>"]],
+  "<byte_value>": [["<numbers>", "<numbers>"]],
+  "<two_byte_value>": [["<byte_value>", "<byte_value>"]],
+  "<four_byte_value>": [
+    ["<byte_value>", "<byte_value>", "<byte_value>", "<byte_value>"]
+  ],
+  "<numbers>": [
+    ["0"],
+    ["1"],
+    ["2"],
+    ["3"],
+    ["4"],
+    ["5"],
+    ["6"],
+    ["7"],
+    ["8"],
+    ["9"],
+    ["A"],
+    ["B"],
+    ["C"],
+    ["D"],
+    ["E"],
+    ["F"]
+  ]
+}

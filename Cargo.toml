@@ -1,16 +1,43 @@
 [package]
 name = "hantu"
+authors = ["Chris K. <admin@0x434b.dev>"]
+license = "MIT OR Apache-2.0"
 version = "0.1.0"
-authors = ["C.K. <admin@0x434b.dev>"]
-repository = "https://github.com/0xricksanchez/hantu/"
 edition = "2021"
 
 
 [dependencies]
+executor = { path = "src/libs/executor/" }
+prng = { path = "src/libs/prng/" }
+errors = { path = "src/libs/errors/" }
+# external dependencies
+core_affinity = "0.8.0"
+clap = { version = "4.2.7", features = ["derive"] }
+grammar_mutator = { path = "src/libs/mutation_engine/src/custom_mutators/grammar_mutator" }
 
 [profile.release]
-debug = true 
-lto = "fat"
 panic = "abort"
-codegen-units = 1
-opt-level = "z"
+opt-level = 2
+lto = "thin"
+
+[profile.dev]
+debug = true
+panic = "unwind"
+
+[profile.instrument]
+inherits = "release"
+debug = 2
+
+[workspace]
+members = [
+  "src/libs/prng/benches",
+  "src/libs/mutation_engine/src/custom_mutators/grammar_mutator",
+  "src/libs/mutation_engine/src/custom_mutators/ni",
+  "src/libs/prng",
+  "src/libs/magic",
+  "src/libs/mutation_engine",
+  "src/libs/test_case",
+  "src/libs/errors",
+  "src/libs/utils",
+  "src/libs/executor",
+]
