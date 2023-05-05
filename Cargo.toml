@@ -1,7 +1,7 @@
 [package]
 name = "hantu"
-authors = ["Christopher Krah <admin@0x434b.dev>"]
-license = "MIT"
+authors = ["Chris K. <admin@0x434b.dev>"]
+license = "MIT OR Apache-2.0"
 version = "0.1.0"
 edition = "2021"
 
