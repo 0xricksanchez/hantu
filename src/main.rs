@@ -122,11 +122,13 @@ fn main() -> Result<()> {
         );
         if let Some(max_iter) = fuzzer_config.max_iter {
             if iterations >= max_iter {
+                println!("[HANTU] Max iterations reached: {}", max_iter);
                 break Ok(());
             }
         }
         if let Some(max_time) = fuzzer_config.max_time {
             if elapsed >= max_time as f64 * 60.0 {
+                println!("[HANTU] Max time reached: {} minute(s)", max_time);
                 break Ok(());
             }
         }

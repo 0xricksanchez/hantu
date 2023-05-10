@@ -174,6 +174,15 @@ where
     /// * `mean` - The mean (average) value of the distribution.
     /// * `stddev` - The standard deviation of the distribution. If not provided, the default value is `(max - min) / 2.0`.
     ///
+    ///
+    /// # Returns
+    ///
+    /// A random number following a Gaussian distribution.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `max` is less than `min`.
+    ///
     /// # Example
     ///
     /// ```
@@ -403,6 +412,10 @@ where
     ///
     /// A random `T`  in the specified range.
     ///
+    /// # Panics
+    ///
+    /// Panics if `max` is less than or equal to `min`.
+    ///
     /// # Example
     ///
     /// ```
@@ -468,6 +481,10 @@ where
     ///
     /// A randomly chosen copy of an item of type `T` from the provided iterable.
     ///
+    /// # Panics
+    ///
+    /// Panics if the iterator is empty.
+    ///
     /// # Example
     ///
     /// ```
@@ -486,8 +503,9 @@ where
         I: IntoIterator<Item = T>,
     {
         let mut entries_iter = entries.into_iter();
-        let size_hint = entries_iter.size_hint();
-        let idx = self.rand_range(0, size_hint.0);
+        let len = entries_iter.size_hint().0;
+        assert!(len > 0, "Cannot pick from an empty iterable");
+        let idx = self.rand_range(0, len);
         entries_iter.nth(idx).unwrap()
     }
 
