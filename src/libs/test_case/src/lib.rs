@@ -36,9 +36,9 @@ impl Default for TestCase {
 }
 
 impl TestCase {
-    pub fn new(data: &Vec<u8>) -> Self {
+    pub fn new(data: &[u8]) -> Self {
         Self {
-            data: data.clone(),
+            data: data.to_vec(),
             size: data.len(),
             data_ptr: 0,
             energy: 0,
@@ -71,7 +71,7 @@ impl TestCase {
     /// # Returns
     ///
     /// The modified object with the updated energy value.
-    pub fn set_energy(mut self, energy: usize) -> Self {
+    pub const fn set_energy(mut self, energy: usize) -> Self {
         self.energy = energy;
         self
     }
@@ -89,13 +89,13 @@ impl TestCase {
     ///
     /// # Arguments
     ///
-    /// * `indices` - A `Vec<usize>` containing the accessed indices.
+    /// * `indices` - A `&[usize]` containing the accessed indices.
     ///
     /// # Returns
     ///
     /// The modified object with the updated accessed indices.
-    pub fn set_accessed(mut self, indices: Vec<usize>) -> Self {
-        self.accessed.extend_from_slice(&indices);
+    pub fn set_accessed(mut self, indices: &[usize]) -> Self {
+        self.accessed.extend_from_slice(indices);
         self
     }
 

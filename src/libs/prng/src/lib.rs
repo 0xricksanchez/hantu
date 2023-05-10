@@ -119,7 +119,7 @@ where
     G: GeneratorTrait,
 {
     /// Creates a new `Rng` with the given generator `G`.
-    pub fn new(generator: G) -> Self {
+    pub const fn new(generator: G) -> Self {
         Self {
             exponential: false,
             generator,
@@ -128,7 +128,7 @@ where
 
     /// Enables or disables the exponential distribution.
     /// Only used in `rand_range`.
-    pub fn set_rand_exp(mut self, exp_enabled: bool) -> Self {
+    pub const fn set_rand_exp(mut self, exp_enabled: bool) -> Self {
         self.exponential = exp_enabled;
         self
     }
@@ -288,6 +288,8 @@ where
     }
 
     /// Generates 2 random `usize` in the range [0, max).
+    /// The two values are returned as a tuple with the first value
+    /// being less than or equal to the second.
     ///
     /// # Arguments
     ///
@@ -319,6 +321,68 @@ where
             }
             val_a = self.rand() % max;
             val_b = self.rand() % max;
+        }
+
+        if val_a > val_b {
+            (val_b, val_a)
+        } else {
+            (val_a, val_b)
+        }
+    }
+
+    /// Generates 2 random `usize` in the range [0, max).
+    /// The two values are returned as a tuple with the first value
+    /// being less than or equal to the second. The two values are
+    /// are guaranteed to be at most `range` apart. If the `range` is
+    /// larger than `max`, `max - 1` will be the new `range`.
+    ///
+    /// # Arguments
+    ///
+    /// * `max` - The upper bound of the range (exclusive).
+    /// * `range` - The maximum distance between the two values.
+    ///
+    /// # Returns
+    ///
+    /// Two random `usize` in the specified ranges.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use prng::xorshift::Xorshift64;
+    /// use prng::{Generator, Rng};
+    /// let mut prng = Rng::new(Generator::Xorshift64(Xorshift64::new(0)));
+    /// let (a,b) = prng.rand_two_range(100, 25);
+    /// assert!(a < 100 && b < 100);
+    /// assert!(b - a <= 25);
+    ///
+    /// let (a,b) = prng.rand_two_range(25, 100);
+    /// assert!(a < 25 && b < 25);
+    /// assert!(b - a <= 25 - 1);
+    #[inline]
+    pub fn rand_two_range(&mut self, max: usize, range: usize) -> (usize, usize) {
+        if max <= 1 {
+            return (0, 1);
+        }
+        let range = if range >= max { max } else { range };
+        let val_a = self.rand_range(0, max);
+
+        let bounded_min = (val_a as isize - range as isize).max(0) as usize;
+        let bounded_max = (val_a + range).min(max - 1);
+        // Generate a random number excluding val_a
+        let val_b = if val_a > bounded_min && val_a < bounded_max {
+            let random_offset = self.rand_range(0, bounded_max - bounded_min);
+            if random_offset >= (val_a - bounded_min) {
+                bounded_min + random_offset + 1
+            } else {
+                bounded_min + random_offset
+            }
+        } else {
+            self.rand_range(bounded_min, bounded_max)
+        };
+
+        // In cases where both are 0
+        if val_a == val_b {
+            return (0, 1);
         }
 
         if val_a > val_b {

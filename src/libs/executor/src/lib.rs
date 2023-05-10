@@ -22,7 +22,6 @@ pub struct FuzzerConfig {
     corpus_dir: String,
     crash_dir: String,
     dict: Option<String>,
-    pub max_iter: Option<usize>,
     batch_sz: usize,
     threads: Vec<CoreId>,
     generator: Generators,
@@ -31,6 +30,9 @@ pub struct FuzzerConfig {
     seed: usize,
     printable: bool,
     mutation_passes: usize,
+    max_length: usize,
+    pub max_iter: Option<usize>,
+    pub max_time: Option<usize>,
 }
 
 impl FuzzerConfig {
@@ -78,7 +80,7 @@ impl FuzzerConfig {
         }
     }
 
-    pub fn set_max_iter(mut self, max_iter: Option<usize>) -> Self {
+    pub const fn set_max_iter(mut self, max_iter: Option<usize>) -> Self {
         if max_iter.is_some() {
             self.max_iter = max_iter;
         }
@@ -95,7 +97,7 @@ impl FuzzerConfig {
         self
     }
 
-    pub fn set_batch_sz(mut self, batch_sz: usize) -> Self {
+    pub const fn set_batch_sz(mut self, batch_sz: usize) -> Self {
         self.batch_sz = batch_sz;
         self
     }
@@ -108,7 +110,7 @@ impl FuzzerConfig {
         self
     }
 
-    pub fn set_seed(mut self, seed: usize) -> Self {
+    pub const fn set_seed(mut self, seed: usize) -> Self {
         self.seed = seed;
         self
     }
@@ -118,13 +120,25 @@ impl FuzzerConfig {
         self
     }
 
-    pub fn set_printable(mut self, printable: bool) -> Self {
+    pub const fn set_printable(mut self, printable: bool) -> Self {
         self.printable = printable;
         self
     }
 
-    pub fn set_mutation_passes(mut self, mutation_passes: usize) -> Self {
+    pub const fn set_mutation_passes(mut self, mutation_passes: usize) -> Self {
         self.mutation_passes = mutation_passes;
+        self
+    }
+
+    pub const fn set_max_length(mut self, max_length: usize) -> Self {
+        self.max_length = max_length;
+        self
+    }
+
+    pub const fn set_max_time(mut self, max_time: Option<usize>) -> Self {
+        if max_time.is_some() {
+            self.max_time = max_time;
+        }
         self
     }
 
@@ -135,7 +149,7 @@ impl FuzzerConfig {
         self
     }
 
-    pub fn set_ni_mutator(mut self, ni_mutator: bool) -> Self {
+    pub const fn set_ni_mutator(mut self, ni_mutator: bool) -> Self {
         self.ni_mutator = ni_mutator;
         self
     }
@@ -148,7 +162,7 @@ pub struct FuzzerStats {
 }
 
 impl FuzzerStats {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             iterations: AtomicUsize::new(0),
             crashes: AtomicUsize::new(0),
@@ -216,6 +230,7 @@ fn get_mutation_engine(corp: &Arc<Vec<Vec<u8>>>, fuzz_config: &FuzzerConfig) -> 
         .set_generator(&fuzz_config.generator)
         .set_generator_seed(fuzz_config.seed)
         .set_mutation_passes(fuzz_config.mutation_passes)
+        .set_max_test_case_size(fuzz_config.max_length)
         .set_printable(fuzz_config.printable);
     if let Some(ref dict) = fuzz_config.dict {
         me = me.set_token_dict(dict);
@@ -301,7 +316,7 @@ pub fn worker(fconfig: &mut FuzzerConfig, fstats: &Arc<FuzzerStats>, thr_id: usi
     let mut avg_tc_sz = 0;
     me.corpus.iter().for_each(|x| avg_tc_sz += x.len());
     avg_tc_sz /= me.corpus.len();
-    println!("[HANTU] Average test case size: {avg_tc_sz} bytes");
+    println!("[HANTU] Average test case size in corpus: {avg_tc_sz} bytes");
 
     let inp_ff = format!(".tmp_inp_{thr_id}");
 

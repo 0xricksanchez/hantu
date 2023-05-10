@@ -59,6 +59,18 @@ struct Clargs {
     )]
     mutation_passes: usize,
     #[clap(
+        long,
+        default_value = "1000",
+        help = "Maximum length of a test case when generating new ones"
+    )]
+    max_length: usize,
+    #[clap(
+        long,
+        default_value = None,
+        help = "Maximum time in minutes to run for"
+    )]
+    max_time: Option<usize>,
+    #[clap(
         short,
         long,
         default_value = "1000",
@@ -83,6 +95,8 @@ impl From<Clargs> for FuzzerConfig {
             .set_grammar(args.grammar_mutator)
             .set_printable(args.printable)
             .set_mutation_passes(args.mutation_passes)
+            .set_max_length(args.max_length)
+            .set_max_time(args.max_time)
     }
 }
 
@@ -108,6 +122,11 @@ fn main() -> Result<()> {
         );
         if let Some(max_iter) = fuzzer_config.max_iter {
             if iterations >= max_iter {
+                break Ok(());
+            }
+        }
+        if let Some(max_time) = fuzzer_config.max_time {
+            if elapsed >= max_time as f64 * 60.0 {
                 break Ok(());
             }
         }
