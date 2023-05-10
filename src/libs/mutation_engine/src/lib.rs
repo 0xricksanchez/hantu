@@ -73,7 +73,16 @@ pub struct MutationEngine {
     // Start token for the grammar generator
     grammar_start: TokenIdentifier,
     // Maximum percentage of the test case to mutate
+    // TODO: expose to CLI
     max_mutation_factor: usize,
+    // Maximum size of the test case
+    // TODO:: expose to CLI
+    max_test_case_size: usize,
+    // The current test case size when generating from scratch
+    // We want to start small to increase exec/s and only increase
+    // the generation of new test cases when we cannot find new
+    // coverage
+    current_test_case_size: usize,
     // PRNG to use for mutations
     pub prng: Rng<Generator>,
     // Enforce ASCII printable mutations
@@ -118,6 +127,8 @@ impl Default for MutationEngine {
             grammar_generator: GrammarCaller::default(),
             grammar_start: TokenIdentifier(0),
             max_mutation_factor: 10,
+            max_test_case_size: 4096,
+            current_test_case_size: 128,
             prng: Rng::new(Generator::Xorshift64(Xorshift64::new(0))),
             printable: false,
             user_token_dict: Vec::new(),
@@ -138,6 +149,8 @@ impl MutationEngine {
     ///
     /// * `mutators`: all available mutators
     /// * `max_mutation_factor`: 10
+    /// * `max_test_case_size`: 4096,
+    /// * `current_test_case_size`: 128,
     /// * `prng`: Xorshift64
     /// * `printable`: false
     /// * `user_token_dict`: empty
@@ -267,7 +280,7 @@ impl MutationEngine {
     ///
     /// # Arguments
     ///
-    /// * `test_case` - A `&Vec<u8>` representing the test case to be added to the corpus.
+    /// * `test_case` - A `&[u8]` representing the test case to be added to the corpus.
     ///
     /// # Example
     ///
@@ -420,7 +433,7 @@ impl MutationEngine {
     /// let mut mutator = MutationEngine::new();
     /// mutator = mutator.set_printable(true);
     /// ```
-    pub fn set_printable(mut self, printable: bool) -> Self {
+    pub const fn set_printable(mut self, printable: bool) -> Self {
         self.printable = printable;
         self
     }
@@ -444,12 +457,35 @@ impl MutationEngine {
     /// let mut mutator = MutationEngine::new();
     /// mutator = mutator.set_max_mutation_size(25);
     /// ```
-    pub fn set_max_mutation_size(mut self, num_factor: usize) -> Self {
+    pub const fn set_max_mutation_size(mut self, num_factor: usize) -> Self {
         if num_factor == 0 || num_factor >= 100 {
             self.max_mutation_factor = 10;
         } else {
             self.max_mutation_factor = num_factor;
         }
+        self
+    }
+
+    /// Sets the maximum size a test case can grow into in bytes
+    ///
+    /// # Arguments
+    ///
+    /// * `size` - The maximum size in bytes. The default is 4096.
+    ///
+    /// # Returns
+    ///
+    /// Self with the updated maximum mutation test case size.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use mutation_engine::MutationEngine;
+    ///
+    /// let mut mutator = MutationEngine::new();
+    /// mutator = mutator.set_max_test_case_size(128);
+    /// ```
+    pub const fn set_max_test_case_size(mut self, size: usize) -> Self {
+        self.max_test_case_size = size;
         self
     }
 
@@ -469,7 +505,7 @@ impl MutationEngine {
     /// let mut mutator = MutationEngine::new();
     /// mutator = mutator.set_mutation_passes(5);
     /// ```
-    pub fn set_mutation_passes(mut self, rounds: usize) -> Self {
+    pub const fn set_mutation_passes(mut self, rounds: usize) -> Self {
         self.mutation_passes = rounds;
         self
     }
@@ -509,7 +545,7 @@ impl MutationEngine {
     /// mutator.set_test_case(&test_case_data);
     /// assert!(mutator.test_case.data == test_case_data);
     /// ```
-    pub fn set_test_case(&mut self, data: &Vec<u8>) -> &mut Self {
+    pub fn set_test_case(&mut self, data: &[u8]) -> &mut Self {
         self.test_case = TestCase::new(data);
         self
     }
@@ -543,7 +579,9 @@ impl MutationEngine {
         if let Some(tc) = self.corpus.get(self.prng.rand_range(0, self.corpus.len())) {
             tc.clone()
         } else {
-            self.prng.rand_byte_vec(128)
+            // TODO: If coverage not increased for a while, try to increase the size of the test case
+            // if self.last_cov_tick > XXX && self.current_test_case_size < self.max_test_case_size {}
+            self.prng.rand_byte_vec(self.current_test_case_size)
         }
     }
 
@@ -599,7 +637,7 @@ impl MutationEngine {
                 Mutators::Standard(StandardMutators::Splice) => self.splice(),
                 Mutators::Standard(StandardMutators::Truncate) => self.truncate(),
                 Mutators::Standard(StandardMutators::Append) => self.append(),
-                Mutators::Standard(StandardMutators::AddFromMagic) => self.add_from_magic(),
+                Mutators::Standard(StandardMutators::AddFromMagic) => self.insert_constant(),
                 Mutators::Standard(StandardMutators::AddWordFromDict) => self.add_word_from_dict(),
                 Mutators::Standard(StandardMutators::AddWordFromTORC) => self.add_word_from_torc(),
                 Mutators::Custom(CustomMutators::Ni) => self.ni(),
@@ -689,17 +727,25 @@ impl MutationEngine {
             let idx = get_random_index(&mut self.test_case.data, &mut self.prng, None);
             self.test_case.data.insert(idx, to_insert);
             self.test_case.size += 1;
-        } else {
-            let max_factor = if self.test_case.size < 20 {
-                self.test_case.size
-            } else {
-                std::cmp::min(100, self.test_case.size / self.max_mutation_factor)
-            };
-            self.test_case
-                .data
-                .splice(idx..idx, std::iter::repeat(to_insert).take(max_factor));
-            self.test_case.size += max_factor;
+            return Ok(());
         }
+        let max_factor = if self.test_case.size < 8 {
+            8
+        } else if self.test_case.size < 64 {
+            self.prng.rand_range(8, self.test_case.size)
+        } else {
+            self.prng.rand_range(
+                0,
+                std::cmp::min(
+                    self.max_test_case_size - self.test_case.size,
+                    self.test_case.size / self.max_mutation_factor,
+                ),
+            ) + 1
+        };
+        self.test_case
+            .data
+            .splice(idx..idx, std::iter::repeat(to_insert).take(max_factor));
+        self.test_case.size += max_factor;
         Ok(())
     }
 
@@ -914,7 +960,7 @@ impl MutationEngine {
         if self.prng.bool() {
             copy_part_of(&rand_test_case, &mut self.test_case, &mut self.prng)
         } else {
-            let max_size = self.test_case.size + self.prng.rand_range(1, self.test_case.size);
+            let max_size = self.test_case.size + self.prng.rand_range(1, self.max_test_case_size);
             insert_part_of(
                 &rand_test_case,
                 &mut self.test_case,
@@ -932,7 +978,7 @@ impl MutationEngine {
 
         let data1 = &mut self.test_case.data;
         let size1 = self.test_case.size;
-        let max_out_size = self.prng.rand() % (data1.len() + data2.len()) + 1;
+        let max_out_size = self.prng.rand_range(2, self.max_test_case_size);
         let mut out = vec![0u8; max_out_size];
         let mut out_pos = 0;
         let mut pos1 = 0;
@@ -969,15 +1015,13 @@ impl MutationEngine {
         assert!(self.corpus.len() > 0, "corpus is empty");
         // `Clone` is not implemented for `Arc` so we get our reference to a test case by index.
         let splice_tc = self.prng.pick(self.corpus.as_slice());
-        let split_idx = self.prng.rand_range(0, self.test_case.size);
         let splice_idx = self.prng.rand_range(0, splice_tc.len());
-        // This is way faster than using the actual built-in splice function.
-        let mut new_data = Vec::with_capacity(split_idx + splice_tc.len() - splice_idx);
+        let split_idx = self.prng.rand_range(0, self.test_case.size);
+        let mut new_data = vec![0u8; split_idx + splice_tc.len() - splice_idx];
         new_data.extend_from_slice(&self.test_case.data[..split_idx]);
         new_data.extend_from_slice(&splice_tc[splice_idx..]);
         self.test_case.size = new_data.len();
         self.test_case.data = new_data;
-        // self.test_case.data.splice(split_idx.., splice_tc[..splice_idx].iter().cloned());
         Ok(())
     }
 
@@ -991,18 +1035,15 @@ impl MutationEngine {
 
     /// Mutator that appends a random sized chunk of the current test case to itself.
     fn append(&mut self) -> Result<()> {
-        let from = self
-            .prng
-            .rand_range(0, self.test_case.size - self.mutation_passes);
-        let to = from + self.mutation_passes;
-        let mut to_append = self.test_case.data[from..to].to_vec();
-        self.test_case.data.append(&mut to_append);
-        self.test_case.size += self.mutation_passes;
+        // We favor smaller appends to avoid blowing up the test case size too much.
+        let (from, to) = self.prng.rand_two_range(self.test_case.size, 128);
+        self.test_case.data.extend_from_within(from..to);
+        self.test_case.size += to - from;
         Ok(())
     }
 
     /// Mutator that inserts a constant value from the magic set into the current test case.
-    fn add_from_magic(&mut self) -> Result<()> {
+    fn insert_constant(&mut self) -> Result<()> {
         // Roll a 4 sided dice to decide which val to read from
         let dice_roll = self.prng.rand_range(0, 4);
         let val: usize;
@@ -1115,7 +1156,7 @@ fn add_from_dict(dict: &[Vec<u8>], data: &mut Vec<u8>, prng: &mut Rng<Generator>
 
 /// Unlike splicing this function will not modify the size of the test case. It will instead
 /// copy a random sized chunk of another test case into the current test case within its bounds.
-fn copy_part_of(from: &Vec<u8>, to: &mut TestCase, prng: &mut Rng<Generator>) -> Result<()> {
+fn copy_part_of(from: &[u8], to: &mut TestCase, prng: &mut Rng<Generator>) -> Result<()> {
     let mut to_idx = prng.rand_range(0, to.size);
     let mut copy_size = std::cmp::min(prng.rand_range(1, to.size - to_idx + 1), from.len());
     let mut from_idx = prng.rand_range(0, from.len() - copy_size + 1);
@@ -1474,7 +1515,7 @@ mod tests {
     fn test_add_from_magic() {
         // Same argumentation as for `swap_endianness`.
         run(
-            MutationEngine::add_from_magic,
+            MutationEngine::insert_constant,
             TestCondition::GeneralErrorChecker,
         );
     }

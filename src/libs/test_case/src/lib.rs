@@ -36,9 +36,9 @@ impl Default for TestCase {
 }
 
 impl TestCase {
-    pub fn new(data: &Vec<u8>) -> Self {
+    pub fn new(data: &[u8]) -> Self {
         Self {
-            data: data.clone(),
+            data: data.to_vec(),
             size: data.len(),
             data_ptr: 0,
             energy: 0,
@@ -71,7 +71,7 @@ impl TestCase {
     /// # Returns
     ///
     /// The modified object with the updated energy value.
-    pub fn set_energy(mut self, energy: usize) -> Self {
+    pub const fn set_energy(mut self, energy: usize) -> Self {
         self.energy = energy;
         self
     }
@@ -89,13 +89,13 @@ impl TestCase {
     ///
     /// # Arguments
     ///
-    /// * `indices` - A `Vec<usize>` containing the accessed indices.
+    /// * `indices` - A `&[usize]` containing the accessed indices.
     ///
     /// # Returns
     ///
     /// The modified object with the updated accessed indices.
-    pub fn set_accessed(mut self, indices: Vec<usize>) -> Self {
-        self.accessed.extend_from_slice(&indices);
+    pub fn set_accessed(mut self, indices: &[usize]) -> Self {
+        self.accessed.extend_from_slice(indices);
         self
     }
 
@@ -153,6 +153,10 @@ impl TestCase {
     ///
     /// A `Result<bool>` which is `Ok(bool)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// If the operation fails, an `Err(Error)` is returned.
+    ///
     /// # Examples
     ///
     /// ```
@@ -181,6 +185,11 @@ impl TestCase {
     ///
     /// A `Result<Vec<bool>>` which is `Ok(Vec<bool>)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// * If the requested number of `bool`s cannot be consumed, an `Err(Error)` is returned.
+    /// * If consuming a single `bool` fails, an `Err(Error)` is returned.
+    ///
     /// # Examples
     ///
     /// ```
@@ -194,9 +203,7 @@ impl TestCase {
         let max = self._get_max(num)?;
         let mut bools = vec![false; max];
         for b in &mut bools {
-            if let Ok(boolean) = self.consume_bool() {
-                *b = boolean;
-            }
+            *b = self.consume_bool()?;
         }
         Ok(bools)
     }
@@ -206,6 +213,10 @@ impl TestCase {
     /// # Returns
     ///
     /// A `Result<u8>` which is `Ok(u8)` if the operation is successful, or an `Err(Error)` if not.
+    ///
+    /// # Errors
+    ///
+    /// If the byte cannot be served due to us having reached the end, an `Err(Error)` is returned.
     ///
     /// # Examples
     ///
@@ -233,6 +244,11 @@ impl TestCase {
     ///
     /// A `Result<Vec<u8>>` which is `Ok(Vec<u8>)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// * If the requested number of `u8`s cannot be consumed, an `Err(Error)` is returned.
+    /// * If consuming a single `u8` fails, an `Err(Error)` is returned.
+    ///
     /// # Examples
     ///
     /// ```
@@ -246,9 +262,7 @@ impl TestCase {
         let max = self._get_max(num)?;
         let mut bytes = vec![0u8; max];
         for b in &mut bytes {
-            if let Ok(byte) = self.consume_byte() {
-                *b = byte;
-            }
+            *b = self.consume_byte()?;
         }
         Ok(bytes)
     }
@@ -258,6 +272,12 @@ impl TestCase {
     /// # Returns
     ///
     /// A `Result<Vec<u8>>` which is `Ok(Vec<u8>)` if the operation is successful, or an `Err(Error)` if not.
+    ///
+    /// # Errors
+    ///
+    /// * If the requested number of `byte`s cannot be consumed, an `Err(Error)` is returned.
+    /// * If consuming a single `byte` fails, an `Err(Error)` is returned.
+    ///
     ///
     /// # Examples
     ///
@@ -282,6 +302,10 @@ impl TestCase {
     /// # Returns
     ///
     /// A `Result<String>` which is `Ok(String)` if the operation is successful, or an `Err(Error)` if not.
+    ///
+    /// # Errors
+    ///
+    /// If the requested length cannot be consumed, an `Err(Error)` is returned.
     ///
     /// # Examples
     ///
@@ -330,6 +354,10 @@ impl TestCase {
     ///
     /// A `Result<String>` which is `Ok(String)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// If there's nothing left to consume, an `Err(Error)` is returned.
+    ///
     /// # Examples
     ///
     /// ```
@@ -355,6 +383,10 @@ impl TestCase {
     ///
     /// A `Result<T>` which is `Ok(T)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// If a conversion error occurs, an `Err(ConversionError)` is returned.
+    ///
     /// # Examples
     ///
     /// ```
@@ -366,8 +398,8 @@ impl TestCase {
     ///
     /// ```
     pub fn consume_int<T: PrimInt>(&mut self, is_little_endian: bool) -> Result<T> {
-        let is_signed =
-            std::num::Wrapping(T::min_value()) < std::num::Wrapping(T::from(0).unwrap());
+        let is_signed = std::num::Wrapping(T::min_value())
+            < std::num::Wrapping(T::from(0).ok_or(Error::ConversionError)?);
         if is_signed {
             self._consume_int_s(is_little_endian)
         } else {
@@ -386,6 +418,11 @@ impl TestCase {
     ///
     /// A `Result<Vec<T>>` which is `Ok(Vec<T>)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// * If there's not enough data left to consume, an `Err(Error)` is returned.
+    /// * If a conversion error occurs, an `Err(ConversionError)` is returned.
+    ///
     /// # Examples
     ///
     /// ```
@@ -403,7 +440,7 @@ impl TestCase {
         num: usize,
     ) -> Result<Vec<T>> {
         let max = std::cmp::min(num, self._get_max(std::mem::size_of::<T>() * num)?);
-        let mut nums: Vec<T> = vec![T::from(0).unwrap(); max];
+        let mut nums: Vec<T> = vec![T::from(0).ok_or(Error::ConversionError)?; max];
         (0..nums.len()).for_each(|n| {
             if let Ok(num) = self.consume_int(is_little_endian) {
                 nums[n] = num;
@@ -425,6 +462,11 @@ impl TestCase {
     ///
     /// A `Result<Vec<T>>` which is `Ok(Vec<T>)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// * If there's not enough data left to consume, an `Err(Error)` is returned.
+    /// * If a conversion error occurs, an `Err(ConversionError)` is returned.
+    ///
     /// # Examples
     ///
     /// ```
@@ -444,7 +486,7 @@ impl TestCase {
         max: T,
     ) -> Result<Vec<T>> {
         let max_ele = std::cmp::min(num, self._get_max(std::mem::size_of::<T>() * num)?);
-        let mut nums: Vec<T> = vec![T::from(0).unwrap(); max_ele];
+        let mut nums: Vec<T> = vec![T::from(0).ok_or(Error::ConversionError)?; max_ele];
         (0..nums.len()).for_each(|n| {
             if let Ok(num) = self.consume_int_range(is_little_endian, min, max) {
                 nums[n] = num;
@@ -464,6 +506,14 @@ impl TestCase {
     ///
     /// A `Result<T>` which is `Ok(T)` if the operation is successful, or an `Err(Error)` if not.
     ///
+    /// # Errors
+    ///
+    /// * If a conversion error occurs, an `Err(ConversionError)` is returned.
+    ///
+    /// # Panics
+    ///
+    /// * If `min` is greater than `max`, a panic occurs.
+    ///
     /// # Examples
     ///
     /// ```
@@ -481,7 +531,7 @@ impl TestCase {
         max: T,
     ) -> Result<T> {
         if max == min {
-            return Ok(T::from(min).unwrap());
+            return T::from(min).ok_or(Error::ConversionError);
         }
         assert!(min < max, "min must be less than max");
 
@@ -513,14 +563,14 @@ impl TestCase {
         let bytes = std::mem::size_of::<T>();
         let vals = self.consume_bytes(bytes)?;
         match bytes {
-            1 => Ok(T::from(vals[0]).unwrap()),
+            1 => T::from(vals[0]).ok_or(Error::ConversionError),
             2 => {
                 let ret = if is_little_endian {
                     u16::from_le_bytes(vals.try_into().unwrap())
                 } else {
                     u16::from_be_bytes(vals.try_into().unwrap())
                 };
-                Ok(T::from(ret).unwrap())
+                T::from(ret).ok_or(Error::ConversionError)
             }
             4 => {
                 let ret = if is_little_endian {
@@ -528,7 +578,7 @@ impl TestCase {
                 } else {
                     u32::from_be_bytes(vals.try_into().unwrap())
                 };
-                Ok(T::from(ret).unwrap())
+                T::from(ret).ok_or(Error::ConversionError)
             }
             8 => {
                 let ret = if is_little_endian {
@@ -536,7 +586,7 @@ impl TestCase {
                 } else {
                     u64::from_be_bytes(vals.try_into().unwrap())
                 };
-                Ok(T::from(ret).unwrap())
+                T::from(ret).ok_or(Error::ConversionError)
             }
             16 => {
                 let ret = if is_little_endian {
@@ -544,7 +594,7 @@ impl TestCase {
                 } else {
                     u128::from_be_bytes(vals.try_into().unwrap())
                 };
-                Ok(T::from(ret).unwrap())
+                T::from(ret).ok_or(Error::ConversionError)
             }
             _ => {
                 unreachable!()
@@ -559,23 +609,23 @@ impl TestCase {
         match bytes {
             1 => {
                 let ret = self._consume_int_u::<u8>(is_little_endian)?;
-                Ok(T::from(ret % max_val as u8).unwrap())
+                T::from(ret % max_val as u8).ok_or(Error::ConversionError)
             }
             2 => {
                 let ret = self._consume_int_u::<u16>(is_little_endian)?;
-                Ok(T::from(ret % max_val as u16).unwrap())
+                T::from(ret % max_val as u16).ok_or(Error::ConversionError)
             }
             4 => {
                 let ret = self._consume_int_u::<u32>(is_little_endian)?;
-                Ok(T::from(ret % max_val as u32).unwrap())
+                T::from(ret % max_val as u32).ok_or(Error::ConversionError)
             }
             8 => {
                 let ret = self._consume_int_u::<u64>(is_little_endian)?;
-                Ok(T::from(ret % max_val as u64).unwrap())
+                T::from(ret % max_val as u64).ok_or(Error::ConversionError)
             }
             16 => {
                 let ret = self._consume_int_u::<u128>(is_little_endian)?;
-                Ok(T::from(ret % max_val).unwrap())
+                T::from(ret % max_val).ok_or(Error::ConversionError)
             }
             _ => unreachable!(),
         }
@@ -587,6 +637,16 @@ impl TestCase {
     /// # Returns
     ///
     /// A `f64` representing the consumed number. The consumed number may have a special value (e.g. NaN or infinity).
+    ///
+    /// # Errors
+    ///
+    /// * Returns an error if reading data from the test case offers less than 8 bytes and we fail
+    /// to consume those
+    /// * Returns an error if the consumed slice dannot be converted to an `f64`
+    ///
+    /// # Panics
+    ///
+    /// Panics if the consumed slice cannot be converted to an `f64`.
     ///
     /// # Example
     ///
@@ -606,8 +666,7 @@ impl TestCase {
         if self.data_ptr + 8 > self.size {
             let mut cdata = [0u8; 8];
             let data_slice = &self.data[self.data_ptr..self.data_ptr + (self.size - self.data_ptr)];
-            let mut reader = std::io::Cursor::new(data_slice);
-            let bytes_read = reader.read(&mut cdata[..]).unwrap();
+            let bytes_read = std::io::Cursor::new(data_slice).read(&mut cdata[..])?;
             cdata[bytes_read..].iter_mut().for_each(|c| *c = 0);
             cdata.reverse();
             self.data_ptr = self.size;

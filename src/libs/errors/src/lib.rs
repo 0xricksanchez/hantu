@@ -25,6 +25,7 @@ pub enum Error {
     NotEmpty(String),
     JoiningThread,
     Fatal(String),
+    ConversionError,
 }
 
 impl Error {
@@ -84,6 +85,7 @@ impl fmt::Display for Error {
             Self::NotEmpty(e) => write!(f, "Directory not empty: {e}"),
             Self::JoiningThread => write!(f, "Joining threads"),
             Self::Fatal(e) => write!(f, "Fatal error: {e}"),
+            Self::ConversionError => write!(f, "Conversion error: "),
         }
     }
 }

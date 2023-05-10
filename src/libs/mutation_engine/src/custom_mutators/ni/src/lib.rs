@@ -217,7 +217,7 @@ fn twiddle(mut val: i64, prng: &mut Rng<Generator>) -> i64 {
 /// # Returns
 ///
 /// An `Option<u8>` containing the opposite delimiter as a `u8`. Returns `None` if the input delimiter is not one of the specified delimiters.
-fn delim_of(delim: u8) -> Option<u8> {
+const fn delim_of(delim: u8) -> Option<u8> {
     match delim {
         b'<' => Some(b'>'),
         b'(' => Some(b')'),
