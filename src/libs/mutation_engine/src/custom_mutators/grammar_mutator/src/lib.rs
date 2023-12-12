@@ -96,7 +96,7 @@ impl From<String> for GrammarTemplate {
 }
 
 impl GrammarTemplate {
-    pub const NAMES: [&str; 62] = [
+    pub const NAMES: [&'static str; 62] = [
         "avi",
         "bash",
         "bmp",
