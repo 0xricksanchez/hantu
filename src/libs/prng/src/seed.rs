@@ -10,7 +10,7 @@ pub struct Seeds {
 macro_rules! get_seeds {
     ($seed:expr, $num:expr) => {{
         use $crate::ENTROPY;
-        use core::arch::asm;
+        
 
         #[cfg(target_arch = "x86_64")]
         pub fn get_rdtsc() -> usize {

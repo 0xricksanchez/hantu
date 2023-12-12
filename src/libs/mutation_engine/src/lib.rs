@@ -1,5 +1,5 @@
 // Feature needs to stay here until issue #43244 is resolved: https://github.com/rust-lang/rust/issues/43244
-#![feature(drain_filter)]
+#![feature(extract_if)]
 mod grammer_caller;
 
 use errors::{Error, Result};
