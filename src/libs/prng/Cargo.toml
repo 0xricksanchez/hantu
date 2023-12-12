@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-packed_simd_2 = { version = "0.3.8", package = "packed_simd_2", features = [
+packed_simd_2 = { version = "0.3.9", package = "packed_simd", features = [
   "into_bits",
 ] }
 clap = { version = "4.2.7", features = ["derive"] }
